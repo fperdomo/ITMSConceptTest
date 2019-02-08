@@ -1,4 +1,5 @@
 ﻿var _Company = "";
+var _SitePath = "http://104.196.27.3:3000/api";
 
 $(function () {        
     initData();      
@@ -19,7 +20,7 @@ $(function () {
                 'Cache': 'no-cache'
             },
             credentials: 'same-origin',
-            url: 'http://104.196.27.3:3000/api/Company',
+            url: _SitePath + '/Company',
             dataType: 'json',
             success: function (response) {
                 $(function () {
@@ -49,7 +50,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -61,7 +62,7 @@ $(function () {
         hideActions();
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/TransferRequest',
+            url: _SitePath + '/TransferRequest',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -104,7 +105,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -126,7 +127,7 @@ $(function () {
         });
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/SubmitTransferRequest',
+            url: _SitePath + '/SubmitTransferRequest',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -135,16 +136,14 @@ $(function () {
             },
             method: "POST",
             data: data,
-            success: function (response) {
-                console.log(response);
-                console.log(JSON.stringify(response));
-                alert("POST Transaction Success...");
+            success: function (response) {               
+                alertSuccess('POST Transaction Success');
                 $("#btnGetTrxs").click();
                 $("#divSubmitTrx").hide();
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -162,7 +161,7 @@ $(function () {
             });
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/UpdateTrasferRequest',
+            url: _SitePath + '/UpdateTrasferRequest',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -172,14 +171,13 @@ $(function () {
             method: "POST",
             data: data,
             success: function (response) {
-                console.log(response);
-                console.log(JSON.stringify(response));
+                $("#btnGetTrxs").click();
                 $("#divUpdateTrx").hide();
-                alert("Update Transaction Success...");
+                alertSuccess("Update Transaction Success");
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -196,7 +194,7 @@ $(function () {
             });
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/PrepareSettlement',
+            url: _SitePath + '/PrepareSettlement',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -205,15 +203,14 @@ $(function () {
             },
             method: "POST",
             data: data,
-            success: function (response) {
-                console.log(response);
-                console.log(JSON.stringify(response));
+            success: function (response) {  
+                $("#btnGetTrxs").click();
                 $("#divSubmitTrx").hide();  
-                alert("PrepareSettlement Transaction Success... WARNING: Rates is Hardcode");
+                alertSuccess("PrepareSettlement Transaction Success... WARNING: Rates is Hardcode");
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -225,7 +222,7 @@ $(function () {
         hideActions();
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/BatchTransferRequest',
+            url: _SitePath + '/BatchTransferRequest',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -271,7 +268,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -287,7 +284,7 @@ $(function () {
             });
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/TransferFunds',
+            url: _SitePath + '/TransferFunds',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -297,15 +294,14 @@ $(function () {
             method: "POST",
             data: data,
             success: function (response) {
-                console.log(response);
-                console.log(JSON.stringify(response));
+                $("#btnGetBatchTransferRequest").click();
                 $("#divTransferFunds").hide();
-                alert("POST TransferFunds Success...");
+                alertSuccess("POST TransferFunds Success");
 
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -321,7 +317,7 @@ $(function () {
             });
 
         $.ajax({
-            url: 'http://104.196.27.3:3000/api/CompleteSettlement',
+            url: _SitePath + '/CompleteSettlement',
             headers: {
                 "Content-Type": "application/json"
             },
@@ -331,15 +327,14 @@ $(function () {
             method: "POST",
             data: data,
             success: function (response) {
-                console.log(response);
-                console.log(JSON.stringify(response));
+                $("#btnGetBatchTransferRequest").click();
                 $("#divTransferFunds").hide();
-                alert("POST CompleteSettlement Success...");
+                alertSuccess("POST CompleteSettlement Success...");
 
             },
             error: function (error) {
                 console.log(error);
-                alert(error.status + " | " + JSON.stringify(error));
+                alertError(error.status + " | " + JSON.stringify(error));
             }
         });
     });
@@ -365,7 +360,7 @@ function initData() {
             'Cache': 'no-cache'
         },
         credentials: 'same-origin',
-        url: 'http://104.196.27.3:3000/api/wallet',
+        url: _SitePath + '/wallet',
         dataType: 'json',
         success: function (response) {
             $('#wallet').append(response[0].name);
@@ -398,6 +393,7 @@ function showPreSett(companyId) {
     $("#batchIdPreSett").val(makeRequestPrepId());
     $("#batchIdPreSett").prop('disabled', true);
     $("#companyIdPreSett").val(companyId);
+    $("#companyIdPreSett").prop('disabled', true);
     $("#divPrepareSett").show();
 }
 
@@ -422,9 +418,9 @@ function hideActions() {
 }
 
 function getDateInFormat(stringDate) {
-    var d = new Date("2019-01-27T15:37:07.524Z");
-    minutes = d.getMinutes().toString().length == 1 ? '0' + d.getMinutes() : d.getMinutes()
-    hours = d.getHours().toString().length == 1 ? '0' + d.getHours() : d.getHours();
+    var d = new Date(stringDate);
+    minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes();
+    hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours();
     return d.toLocaleDateString() + ' ' + hours + ':' + minutes;   
 }
 
@@ -448,6 +444,24 @@ function makeRequestPrepId() {
     return text;
 }
 
+function alertSuccess(msgSuccess) {
+    Swal.fire({
+        position: 'center',
+        type: 'success',
+        title: msgSuccess,
+        showConfirmButton: true,
+        timer: 3500
+    });
+}
+
+function alertError(msgError) {
+    Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: msgError
+    });
+}
+
 function getCompanyByUser(userName) {
     $.ajax({
         xhrFields: {
@@ -459,7 +473,7 @@ function getCompanyByUser(userName) {
             'Cache': 'no-cache'
         },
         credentials: 'same-origin',
-        url: 'http://104.196.27.3:3000/api/system/identities',
+        url: _SitePath + '/system/identities',
         dataType: 'json',
         success: function (response) {
             $.each(response, function (i, item) {
@@ -471,7 +485,6 @@ function getCompanyByUser(userName) {
             });
         },
         error: function (error) {
-            console.log(error);
             $('#wallet').html("Log in to: <a target='_blank' href='http://104.196.27.3:3000/auth/github'> REST Composer SERVER <a>");
         }
     });
