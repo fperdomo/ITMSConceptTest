@@ -50,7 +50,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -105,7 +105,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -143,7 +143,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -177,7 +177,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -210,7 +210,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -268,7 +268,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -301,7 +301,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -334,7 +334,7 @@ $(function () {
             },
             error: function (error) {
                 console.log(error);
-                alertError(error.status + " | " + JSON.stringify(error));
+                 alertError(error.responseJSON.error.message);
             }
         });
     });
@@ -363,13 +363,18 @@ function initData() {
         url: _SitePath + '/wallet',
         dataType: 'json',
         success: function (response) {
-            $('#wallet').append(response[0].name);
+            $("#hdButtons").show();  
+            $("#company").show();
+            $('#wallet').append(response[0].name.split("@")[0]);
             getCompanyByUser(response[0].name.split("@")[0]);
             $('#companies_table').show();
+
         },
         error: function (error) {
             console.log(error);
             $('#wallet').html("Log in to: <a target='_blank' href='http://104.196.27.3:3000/auth/github'> REST Composer SERVER <a>");
+            $("#hdButtons").hide();  
+            $("#company").hide();
         }
     });
 }
@@ -379,6 +384,8 @@ function showSubmitTrxRequest(companyId) {
     $("#requestId").prop('disabled', true);
     $("#toCompanyId").val(companyId);
     $("#toCompanyId").prop('disabled', true);
+    $("#amount").val(makeRequestId());
+    $("#description").val(makeRequestId());
     $("#divTransactions").hide();      
     $("#divSubmitTrx").show();  
 }
@@ -386,6 +393,7 @@ function showSubmitTrxRequest(companyId) {
 function showUpdateTrxRequest(requestId) {
     $("#requestUpdateId").val(requestId);
     $("#requestUpdateId").prop('disabled', true);
+    $("#reasonsUpdateRejected").val("");    
     $("#divUpdateTrx").show();
 }
 
