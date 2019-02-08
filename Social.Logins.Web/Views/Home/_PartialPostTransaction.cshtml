@@ -1,0 +1,42 @@
+﻿<div class="container" id="divSubmitTrx">
+    <div class="row">
+        <h3>POST SubmitTransactionRequest</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-lg-6" style=" border:1.5px groove #e7e8ec;border-radius: 8px;">
+            <form style="margin-top:10px;">
+                <div class="form-group">
+                    <label for="requestId">Request Id</label>
+                    <input type="text" class="form-control" id="requestId">
+                </div>
+                <div class="form-group">
+                    <label for="toCompanyId">To Company Id</label>
+                    <input type="text" class="form-control" id="toCompanyId">
+                </div>
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select class="form-control" id="currency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EURO</option>
+                        <option value="GBP">STERLING</option>
+                        <option value="YEN">YEN</option>
+                        <option value="CHF">CHF</option>
+                        <option value="CAD">CAD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="text" class="form-control" id="amount">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description">
+                </div>
+
+            </form>
+            <div class="text-center">
+                <button class="btn btn-primary btn-sx" style="margin-bottom:10px;" type="button" id="btnPostTrx">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

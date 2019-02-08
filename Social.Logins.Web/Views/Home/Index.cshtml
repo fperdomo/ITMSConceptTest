@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="jumbotron" style="background-color:#f6f5ff !important ">
+
+    @*@if (User.Identity.IsAuthenticated)
+        {
+            <p>Hello @User.Identity.Name</p>
+
+        }
+        else
+        {*@
+    <partial name="~/Views/Home/_PartialTopButtons.cshtml" />
+
+    <partial name="~/Views/Home/_PartialCompany.cshtml" />
+
+    <partial name="~/Views/Home/_PartialTransaction.cshtml" />
+
+    <partial name="~/Views/Home/_PartialPostTransaction.cshtml" />
+
+    <partial name="~/Views/Home/_PartialUpdateTransaction.cshtml" />
+
+    <partial name="~/Views/Home/_PartialPrepareSettlement.cshtml" />
+
+    <partial name="~/Views/Home/_PartialBatchTransferRequest.cshtml" />
+
+    <partial name="~/Views/Home/_PartialTransferFunds.cshtml" />
+
+    <partial name="~/Views/Home/_PartialCompleteSettlement.cshtml" />
+
+    <hr>
+
+    @*}*@
+</div>

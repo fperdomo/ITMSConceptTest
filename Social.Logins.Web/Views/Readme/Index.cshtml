@@ -1,0 +1,64 @@
+﻿@model Social.Logins.Web.Controllers.ProfileViewModel
+@{
+    ViewBag.Title = "Readme";
+}
+<!DOCTYPE html>
+<html>
+<body id="preview">
+    <h1><a id="ITMS_Network_0"></a>ITMS Network</h1>
+    <p>The Intercompany Transaction Network allows participants to process inter-participant payments, thus replacing a traditional clearing house. Participants within the network are <code>Company</code> participants that accumulate and submit one or more <code>TransferRequest</code> items to other participants. These transfer requests are placed into the business network, and when an <code>PrepareSettlement</code> transaction is invoked, all transfer requests for each company are accumulated into a series of net <code>BatchTransferRequest</code> which details the required net <code>Settlement</code> between each <code>Company</code> for the period.</p>
+    <h1><a id="Network_Flow_4"></a>Network Flow</h1>
+    <p>The Business Network flow is the following:</p>
+    <ul>
+        <li>Each <code>Company</code> submits a series of <code>SubmitTransferRequest</code> transactions, creating as many <code>TransferRequest</code> assets as needed.</li>
+        <li>At a specific day of the month, period settlement occurs, for this, the <code>PrepareSettlement</code> chaincode is invoked for each company of the network, aggregating all <code>APPROVED</code> <code>TransferRequests</code> related that company into a new <code>BatchTransferRequest</code> asset. All those <code>TransferRequests</code> are placed into <code>READY_TO_SETTLE</code> state.</li>
+        <li>Each <code>Company</code> detects <code>BatchTransferRequest</code> assets that are involved in and processes all referenced <code>TransferRequest</code> assets related to the batch. At this stage the <code>Company</code> would be updating internal systems and getting ready for the transfer of funds.</li>
+        <li><code>TransferFunds</code> is invoked. This executes a fund transfer between the participant’s banks for the passed BatchTransferRequest and the state is moved to <code>SETTLED</code>.</li>
+        <li>Once <code>Settlement</code> has occurred, and transfers were executed, the <code>TransferRequest</code> assets are changed to <code>COMPLETED</code> state.</li>
+        <li>Once all <code>TransferRequest</code> assets are in the <code>COMPLETED</code> state, the parent <code>BatchTransferRequest</code> is marked as <code>COMPLETED</code>.</li>
+    </ul>
+    <p>This business network defines:</p>
+    <p>
+        <strong>Participants</strong><br>
+        <code>Company</code>
+    </p>
+    <p>
+        <strong>Assets</strong><br>
+        <code>TransferRequest</code>, <code>BatchTransferRequest</code>
+    </p>
+    <p>
+        <strong>Transactions</strong><br>
+        <code>SubmitTransferRequest</code>, <code>UpdateTrasferRequest</code>,<code>PrepareSettlement</code>,<code>TransferFunds</code>, <code>CompleteSettlement</code>
+    </p>
+    <h2><a id="SubmitTransferRequest_24"></a>SubmitTransferRequest</h2>
+    <p>The <code>SubmitTransferRequest</code> transaction submitted by a <code>Company</code> participant will create a new <code>TransferRequest</code> asset.</p>
+    <p><strong>Parameters:</strong> sender company, charged company, amount, currency, description.</p>
+    <p><strong>Result:</strong> creates a TransferRequest asset in PENDING status</p>
+    <h2><a id="UpdateTrasferRequest_31"></a>UpdateTrasferRequest</h2>
+    <p>The <code>UpdateTrasferRequest</code> transaction submitted by a <code>Company</code> participant for a given <code>TransferRequest</code>, will update its state to <code>APPROVED</code> or <code>REJECTED</code>.</p>
+    <p><strong>Parameters:</strong> <code>TransferRequest</code> asset ID, status, reasonRejected</p>
+    <p><strong>Result:</strong> sets the <code>TransferRequest</code> asset to it’s new state and in case is REJECTED, updates it’s reasons.</p>
+    <h2><a id="PrepareSettlement_38"></a>PrepareSettlement</h2>
+    <p>The <code>PrepareSettlement</code> transaction submitted by a <code>Company</code> participant will create a new <code>BatchTransferRequest</code>.</p>
+    <p><strong>Parameters:</strong> currency rates list</p>
+    <p>
+        <strong>Result:</strong> creates a <code>BatchTransferRequest</code> in the Asset Registry for each unique pairing of <code>Company</code> participants containing the list of <code>APPROVED</code> Transfers for the period.<br>
+        An event will be emitted for each <code>BatchTransferRequest</code> created.<br>
+        Each <code>TransferRequest</code> references by the batch changes state to <code>READY_TO_SETTLE</code>.
+    </p>
+    <h2><a id="TransferFunds_47"></a>TransferFunds</h2>
+    <p>The <code>TransferFunds</code> transaction submitted by a <code>Company</code> participant will perform a fund transfer.</p>
+    <p><strong>Parameters:</strong> <code>BatchTransferRequest</code> asset id</p>
+    <p>
+        <strong>Result:</strong> performs a fund transafer between the named <code>Company</code> participants from the passed <code>BatchTransferRequest</code> identifier, based on the currency rates list. Once funds have been transfered between <code>BankingParticipant</code> participants, the realated <code>TransferRequest</code> will be marked in the <code>SETTLED</code> state as well as the <code>BatchTransferRequest</code>.<br>
+        An event will be emitted notifing both <code>Company</code> participants.
+    </p>
+    <h2><a id="CompleteSettlement_55"></a>CompleteSettlement</h2>
+    <p>Once the company has completed post settlement internal actions, the creditor company will execute this in order to set the <code>BatchTransferRequest</code> as <code>COMPLETED</code>.</p>
+    <p><strong>Parameters:</strong> <code>BatchTransferRequest</code> asset id</p>
+    <p>
+        <strong>Result:</strong> update the given <code>BatchTransferRequest</code> state to <code>COMPLETED</code> and all referenced <code>TransferRequest</code> assets state to <code>COMPLETED</code>.<br>
+        An event will be emitted notifing both <code>Company</code> participants.
+    </p>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿<div class="container" id="divUpdateTrx">
+    <div class="row">
+        <h3>POST UpdateTransactionRequest</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-lg-6" style=" border:1.5px groove #e7e8ec;border-radius: 8px;">
+            <form style="margin-top:10px;">
+                <div class="form-group">
+                    <label for="requestUpdateId">Request Id</label>
+                    <input type="text" class="form-control" id="requestUpdateId">
+                </div>
+                <div class="form-group">
+                    <label for="stateUpdate">State</label>
+                    <select class="form-control" id="stateUpdate">
+                        <option value="APPROVED">APPROVED</option>
+                        <option value="REJECTED">REJECTED</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reasonsUpdateRejected">Reasons Rejected</label>
+                    <input type="text" class="form-control" id="reasonsUpdateRejected">
+                </div>
+            </form>
+            <div class="text-center">
+                <button class="btn btn-primary btn-sx" style="margin-bottom:10px;" type="button" id="btnUpdateTrx">Confirm</button>
+            </div>        
+        </div>
+    </div>
+</div>
