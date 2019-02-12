@@ -1,15 +1,19 @@
 ﻿var _Company = "";
 var _SitePath = "http://104.196.27.3:3000/api";
+var _optionsModal = { "backdrop": "static", keyboard: true }; 
 
-$(function () {        
+$(function () {  
+    // unblock when ajax activity stops 
+    $(document).ajaxStop($.unblockUI); 
+
     initData();      
     
-    $("#btnGetCompanies").click(function () {
+    $("#btnGetCompanies").click(function () {       
         $("#divCompanies").show();
         $("#divTransactions").hide();
         $("#divBatchTransferReq").hide();
         hideActions();
-
+        blockUICustom();
         $.ajax({
             xhrFields: {
                 withCredentials: true
@@ -24,15 +28,17 @@ $(function () {
             dataType: 'json',
             success: function (response) {
                 $(function () {
-                    $("#companies_table tr").remove();
-                    var $tr = $('<tr>').append(
+                    $("#companies_table thead").remove();
+                    $("#companies_table tbody").remove();
+                    var $tr = $('<thead>').append($('<tr>').append(
                         $('<th scope="col">').text("Company Id"),
                         $('<th scope="col">').text("Company Name"),
                         $('<th scope="col">').text("Working Currency"),
                         $('<th scope="col">').text("Fund Balance"),
                         $('<th scope="col">').text(""),
                         $('<th scope="col">').text("")
-                    ).appendTo('#companies_table');
+                    )).appendTo('#companies_table');
+                    $('<tbody>').appendTo('#companies_table');
                     $.each(response, function (i, item) {
                         var $tr = $('<tr>').append(
                             $('<td scope="row">').text(item.companyId),
@@ -40,11 +46,15 @@ $(function () {
                             $('<td>').text(item.workingCurrency),
                             $('<td>').text(item.fundBalance),
                             item.companyId === _Company ? $('<td>').text('') :  $('<td>').append("<button type='button' class='btn btn-primary' id='btnTrxReq_" + item.companyId + "' onClick='showSubmitTrxRequest(\"" + item.companyId +"\")' > Submit Trx </button>"),
-                            item.companyId === _Company ? $('<td>').text('') : $('<td>').append("<button type='button' class='btn btn-primary' id='btnPreSett_" + item.companyId + "' onClick='showPreSett(\"" + item.companyId + "\")' > Pre Sett </button>")
+                            item.companyId === _Company ? $('<td>').text('') : $('<td>').append("<button type='button' class='btn btn-primary' id='btnPreSett_" + item.companyId + "' onClick='alertPrepareSettlement(\"" + item.companyId + "\")' > Pre Sett </button>")
                         ).appendTo('#companies_table');
-
+                        $('</tbody>').appendTo('#companies_table');
                         $('#companies_table').show();
                     });
+
+                    $('#companies_table').show();
+                    $('#companies_table').DataTable();
+
                 });
 
             },
@@ -60,7 +70,7 @@ $(function () {
         $("#divTransactions").show();
         $("#divBatchTransferReq").hide();
         hideActions();
-
+        blockUICustom();
         $.ajax({
             url: _SitePath + '/TransferRequest',
             headers: {
@@ -71,8 +81,9 @@ $(function () {
             },
             success: function (response) {
                 $(function () {
-                    $("#transactions_table tr").remove();
-                    var $tr = $('<tr>').append(
+                    $("#transactions_table thead").remove();
+                    $("#transactions_table tbody").remove();
+                    var $tr = $('<thead>').append($('<tr>').append(
                         $('<th scope="col">').text("Request Id"),
                         $('<th scope="col">').text("From Company Id"),
                         $('<th scope="col">').text("To Company Id"),
@@ -83,7 +94,8 @@ $(function () {
                         $('<th scope="col">').text("Description"),
                         $('<th scope="col">').text("Reasons Rejected"),
                         $('<th scope="col">').text("")
-                    ).appendTo('#transactions_table');
+                    )).appendTo('#transactions_table');
+                    $('<tbody>').appendTo('#transactions_table');
                     $.each(response, function (i, item) {
                         var $tr = $('<tr>').append(
                             $('<td scope="row">').text(item.requestId),
@@ -97,8 +109,13 @@ $(function () {
                             $('<td>').text(item.details.reasonsRejected),
                             item.state === "PENDING" & item.toCompany.split("#")[1] === _Company ? $('<td>').append("<button type='button' class='btn btn-primary' id='btnUpdTrx_" + item.requestId + "' onClick='showUpdateTrxRequest(\"" + item.requestId + "\")' > Update Trx </button>") : $('<td>').text('')
                         ).appendTo('#transactions_table');
+                        $('</tbody>').appendTo('#transactions_table');
+                       
+                    });
 
-                        $('#transactions_table').show();
+                    $('#transactions_table').show();
+                    $('#transactions_table').DataTable({
+                        "order": [[6, "desc"]]
                     });
                 });
 
@@ -108,119 +125,14 @@ $(function () {
                  alertError(error.responseJSON.error.message);
             }
         });
-    });
-
-    $("#btnPostTrx").click(function () {
-
-        var data = JSON.stringify({
-            "$class": "com.itms.SubmitTransferRequest",
-            "requestId": $("#requestId").val(),
-            "toCompanyId": $("#toCompanyId").val(),
-            "details": {
-                "$class": "com.itms.Transfer",
-                "currency": $("#currency").val(),
-                "amount": $("#amount").val(),
-                "date": new Date(),
-                "description": $("#description").val(),
-                "reasonsRejected": ""
-            }
-        });
-
-        $.ajax({
-            url: _SitePath + '/SubmitTransferRequest',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            method: "POST",
-            data: data,
-            success: function (response) {               
-                alertSuccess('POST Transaction Success');
-                $("#btnGetTrxs").click();
-                $("#divSubmitTrx").hide();
-            },
-            error: function (error) {
-                console.log(error);
-                 alertError(error.responseJSON.error.message);
-            }
-        });
-    });
-
-    $("#btnUpdateTrx").click(function () {
-
-        var data = JSON.stringify(
-            {
-                "$class": "com.itms.UpdateTrasferRequest",
-                "requestId": $("#requestUpdateId").val(),
-                "state": $("#stateUpdate").val(),
-                "reasonsRejected": $("#reasonsUpdateRejected").val(),
-                "transactionId": "",
-                "timestamp": new Date()
-            });
-
-        $.ajax({
-            url: _SitePath + '/UpdateTrasferRequest',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            method: "POST",
-            data: data,
-            success: function (response) {
-                $("#btnGetTrxs").click();
-                $("#divUpdateTrx").hide();
-                alertSuccess("Update Transaction Success");
-            },
-            error: function (error) {
-                console.log(error);
-                 alertError(error.responseJSON.error.message);
-            }
-        });
-    });
-
-    $("#btnPreSett").click(function () {
-        var data = JSON.stringify(
-            {
-                "$class": "com.itms.PrepareSettlement",
-                "batchId": $("#batchIdPreSett").val(),
-                "rates": [{ "$class": "com.itms.ExchangeRate", "to": "EUR", "rate": 0.75 }],
-                "companyId": $("#companyIdPreSett").val(),
-                "transactionId": "",
-                "timestamp": new Date()
-            });
-
-        $.ajax({
-            url: _SitePath + '/PrepareSettlement',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            method: "POST",
-            data: data,
-            success: function (response) {  
-                $("#btnGetTrxs").click();
-                $("#divSubmitTrx").hide();  
-                alertSuccess("PrepareSettlement Transaction Success... WARNING: Rates is Hardcode");
-            },
-            error: function (error) {
-                console.log(error);
-                 alertError(error.responseJSON.error.message);
-            }
-        });
-    });
-
+    });    
+    
     $("#btnGetBatchTransferRequest").click(function () {
         $("#divCompanies").hide();
         $("#divTransactions").hide();
         $("#divBatchTransferReq").show();
         hideActions();
-
+        blockUICustom();
         $.ajax({
             url: _SitePath + '/BatchTransferRequest',
             headers: {
@@ -230,10 +142,11 @@ $(function () {
                 withCredentials: true
             },
             success: function (response) {
-                $(function () {
-                    
-                    $("#batchtransfertequest_table tr").remove();
-                    var $tr = $('<tr>').append(
+                $(function () {                    
+              
+                    $("#batchtransfertequest_table thead").remove();
+                    $("#batchtransfertequest_table tbody").remove();
+                    var $tr = $('<thead>').append($('<tr>').append(
                         $('<th scope="col">').text("Batch Id"),
                         $('<th scope="col">').text("State"),
                         $('<th scope="col">').text("Settlement Currency"),
@@ -245,7 +158,8 @@ $(function () {
                         $('<th scope="col">').text("Rates rate"),
                         $('<th scope="col">').text(""),
                         $('<th scope="col">').text(""),
-                    ).appendTo('#batchtransfertequest_table');
+                    )).appendTo('#batchtransfertequest_table');
+                    $('<tbody>').appendTo('#batchtransfertequest_table');
                     $.each(response, function (i, item) {
                         var $tr = $('<tr>').append(
                             $('<td scope="row">').text(item.batchId),
@@ -257,11 +171,16 @@ $(function () {
                             $('<td>').text(item.settlement.debtor.split("#")[1]),
                             $('<td>').text(item.rates[0].to),
                             $('<td>').text(item.rates[0].rate),
-                            item.state === "PENDING" & item.settlement.debtor.split("#")[1] === _Company ? $('<td>').append("<button type='button' class='btn btn-primary' id='btnTransferFunds_" + item.batchId + "' onClick='showTransferFunds(\"" + item.batchId + "\")' > Transfer Funds </button>") : $('<td>').text(''),
-                            item.state === "SETTLED" & item.settlement.creditor.split("#")[1] === _Company ? $('<td>').append("<button type='button' class='btn btn-primary' id='btnCompleteSett_" + item.batchId + "' onClick='showCompleteSett(\"" + item.batchId + "\")' > Complete Sett </button>") : $('<td>').text('')
+                            item.state === "PENDING" & item.settlement.debtor.split("#")[1] === _Company ? $('<td>').append("<button type='button' class='btn btn-primary' id='btnTransferFunds_" + item.batchId + "' onClick='alertTransferFunds(\"" + item.batchId + "\")' > Transfer Funds </button>") : $('<td>').text(''),
+                            item.state === "SETTLED" & item.settlement.creditor.split("#")[1] === _Company ? $('<td>').append("<button type='button' class='btn btn-primary' id='btnCompleteSett_" + item.batchId + "' onClick='alertCompleteSettlement(\"" + item.batchId + "\")' > Complete Sett </button>") : $('<td>').text('')
                         ).appendTo('#batchtransfertequest_table');
+                        $('</tbody>').appendTo('#batchtransfertequest_table');
+                       
+                    });
 
-                        $('#batchtransfertequest_table').show();
+                    $('#batchtransfertequest_table').show();
+                    $('#batchtransfertequest_table').DataTable({
+                        "order": [[4, "desc"]]
                     });
                 });
 
@@ -272,75 +191,11 @@ $(function () {
             }
         });
     });
-
-    $("#btnTransferFunds").click(function () {
-
-        var data = JSON.stringify(
-            {
-                "$class": "com.itms.TransferFunds",
-                "batchId": $("#batchIdTransferFunds").val(),
-                "transactionId": "",
-                "timestamp": new Date()
-            });
-
-        $.ajax({
-            url: _SitePath + '/TransferFunds',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            method: "POST",
-            data: data,
-            success: function (response) {
-                $("#btnGetBatchTransferRequest").click();
-                $("#divTransferFunds").hide();
-                alertSuccess("POST TransferFunds Success");
-
-            },
-            error: function (error) {
-                console.log(error);
-                 alertError(error.responseJSON.error.message);
-            }
-        });
-    });
-
-    $("#btnCompleteSettlement").click(function () {
-
-        var data = JSON.stringify(
-            {
-                "$class": "com.itms.CompleteSettlement",
-                "batchId": $("#batchIdCompleteSett").val(),
-                "transactionId": "",
-                "timestamp": new Date()
-            });
-
-        $.ajax({
-            url: _SitePath + '/CompleteSettlement',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            method: "POST",
-            data: data,
-            success: function (response) {
-                $("#btnGetBatchTransferRequest").click();
-                $("#divTransferFunds").hide();
-                alertSuccess("POST CompleteSettlement Success...");
-
-            },
-            error: function (error) {
-                console.log(error);
-                 alertError(error.responseJSON.error.message);
-            }
-        });
-    });
+   
 });
 
 function initData() {
+    blockUICustom();
     $("#divCompanies").show();
     $("#divTransactions").show();
     $("#divBatchTransferReq").show();
@@ -379,42 +234,295 @@ function initData() {
     });
 }
 
-function showSubmitTrxRequest(companyId) {
+function showSubmitTrxRequest(companyId) {      
+    $('#modalMainContent').html($('#divSubmitTrx').html());
+    $('#modalMain').modal(_optionsModal);
+
     $("#requestId").val(makeRequestId());
     $("#requestId").prop('disabled', true);
     $("#toCompanyId").val(companyId);
     $("#toCompanyId").prop('disabled', true);
-    $("#amount").val(makeRequestId());
-    $("#description").val(makeRequestId());
-    $("#divTransactions").hide();      
-    $("#divSubmitTrx").show();  
+    $("#amount").val();
+    $("#description").val();
+    $("#divTransactions").hide(); 
+    $("#btnPostTrx").click(function () { actionSubmitTrxRequest() });
+
+    $('#modalMain').modal('show'); 
+}
+
+function actionSubmitTrxRequest() {
+    if (validateSubmitTrxRequest()) {
+        blockUICustom();
+        var data = JSON.stringify({
+            "$class": "com.itms.SubmitTransferRequest",
+            "requestId": $("#requestId").val(),
+            "toCompanyId": $("#toCompanyId").val(),
+            "details": {
+                "$class": "com.itms.Transfer",
+                "currency": $("#currency").val(),
+                "amount": $("#amount").val(),
+                "date": new Date(),
+                "description": $("#description").val(),
+                "reasonsRejected": ""
+            }
+        });
+
+        $.ajax({
+            url: _SitePath + '/SubmitTransferRequest',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            method: "POST",
+            data: data,
+            success: function (response) {
+                $("#btnGetTrxs").click();
+                $('#modalMain').modal('hide');
+                alertSuccess('POST Transaction Success');
+            },
+            error: function (error) {
+                console.log(error);
+                alertError(error.responseJSON.error.message);
+            }
+        });
+
+    } else 
+        alertWarningInputData();   
+}
+
+function validateSubmitTrxRequest() {
+    var amount = $("#amount").val();
+    var description = $("#description").val();
+    var isValid = true;
+    if (amount === "" || description === "")
+        isValid = false;
+
+    return isValid;
 }
 
 function showUpdateTrxRequest(requestId) {
+    $('#modalMainContent').html($('#divUpdateTrx').html());
+    $('#modalMain').modal(_optionsModal);
+
     $("#requestUpdateId").val(requestId);
     $("#requestUpdateId").prop('disabled', true);
-    $("#reasonsUpdateRejected").val("");    
-    $("#divUpdateTrx").show();
+    $("#reasonsUpdateRejected").val("");
+    $("#reasonsUpdateRejected").prop('disabled', true);    
+    $("#stateUpdate").val('APPROVED');
+    $("#stateUpdate").change(function () {
+        changeStateUpdate($(this).val());
+    })
+
+    $("#btnUpdateTrx").click(function () { actionUpdateTrx() });
+    $('#modalMain').modal('show'); 
 }
 
-function showPreSett(companyId) {
-    $("#batchIdPreSett").val(makeRequestPrepId());
-    $("#batchIdPreSett").prop('disabled', true);
-    $("#companyIdPreSett").val(companyId);
-    $("#companyIdPreSett").prop('disabled', true);
-    $("#divPrepareSett").show();
+function changeStateUpdate(stateUpdate) {
+    if (stateUpdate === "APPROVED") {
+        $("#reasonsUpdateRejected").val("");
+        $("#reasonsUpdateRejected").prop('disabled', true);        
+    } else if (stateUpdate === "REJECTED") {
+        $("#reasonsUpdateRejected").val("");
+        $("#reasonsUpdateRejected").prop('disabled', false);
+    } 
 }
 
-function showTransferFunds(batchId) {
-    $("#batchIdTransferFunds").val(batchId);
-    $("#batchIdTransferFunds").prop('disabled', true);    
-    $("#divTransferFunds").show();
+function validateUpdateTrxRequest() {
+    var stateUpdate = $("#stateUpdate").val();
+    var reasonsRejected = $("#reasonsUpdateRejected").val();
+    var isValid = true;
+    if (stateUpdate === "REJECTED" && reasonsRejected === "")
+        isValid = false;
+
+    return isValid;
 }
 
-function showCompleteSett(batchId) {
-    $("#batchIdCompleteSett").val(batchId);
-    $("#batchIdCompleteSett").prop('disabled', true);
-    $("#divCompleteSett").show();
+function actionUpdateTrx() {
+    if (validateUpdateTrxRequest()) {
+        blockUICustom();
+        var data = JSON.stringify(
+            {
+                "$class": "com.itms.UpdateTrasferRequest",
+                "requestId": $("#requestUpdateId").val(),
+                "state": $("#stateUpdate").val(),
+                "reasonsRejected": $("#reasonsUpdateRejected").val(),
+                "transactionId": "",
+                "timestamp": new Date()
+            });
+
+        $.ajax({
+            url: _SitePath + '/UpdateTrasferRequest',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            method: "POST",
+            data: data,
+            success: function (response) {
+                $("#btnGetTrxs").click();
+                $('#modalMain').modal('hide');
+                alertSuccess("Update Transaction Success");
+            },
+            error: function (error) {
+                console.log(error);
+                alertError(error.responseJSON.error.message);
+            }
+        });
+    } else
+        alertWarningInputData(); 
+   
+}
+
+function alertPrepareSettlement(companyId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are going to Prepare Settlement for Company: " + companyId,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.value) {
+            actionPrepareSettlement(companyId)
+        }
+    })
+}
+
+function actionPrepareSettlement(companyId) {
+    blockUICustom();
+    var data = JSON.stringify(
+        {
+            "$class": "com.itms.PrepareSettlement",
+            "batchId": makeRequestPrepId(),
+            "rates": [{ "$class": "com.itms.ExchangeRate", "to": "EUR", "rate": 0.75 }],
+            "companyId": companyId,
+            "transactionId": "",
+            "timestamp": new Date()
+        });
+
+    $.ajax({
+        url: _SitePath + '/PrepareSettlement',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        method: "POST",
+        data: data,
+        success: function (response) {
+            $("#btnGetTrxs").click();
+            $("#divSubmitTrx").hide();
+            alertSuccess("PrepareSettlement Transaction Success... WARNING: ExchangeRate is Hardcode");
+        },
+        error: function (error) {
+            console.log(error);
+            alertError(error.responseJSON.error.message);
+        }
+    });
+}
+
+function alertCompleteSettlement(batchId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are going to Complete Settlement with BatchId: " + batchId,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.value) {
+            actionCompleteSettlement(batchId)
+        }
+    })
+}
+
+function actionCompleteSettlement(batchId) {
+    blockUICustom();
+    var data = JSON.stringify(
+        {
+            "$class": "com.itms.CompleteSettlement",
+            "batchId": batchId,
+            "transactionId": "",
+            "timestamp": new Date()
+        });
+
+    $.ajax({
+        url: _SitePath + '/CompleteSettlement',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        method: "POST",
+        data: data,
+        success: function (response) {
+            $("#btnGetBatchTransferRequest").click();
+            $("#divTransferFunds").hide();
+            alertSuccess("POST CompleteSettlement Success...");
+
+        },
+        error: function (error) {
+            console.log(error);
+            alertError(error.responseJSON.error.message);
+        }
+    });
+}
+
+function alertTransferFunds(batchId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are going to Transfer Fund for Batch Id: " + batchId,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.value) {
+            actionTransferFunds(batchId)
+        }
+    })
+}
+
+function actionTransferFunds(batchId) {
+    blockUICustom();
+    var data = JSON.stringify(
+        {
+            "$class": "com.itms.TransferFunds",
+            "batchId": batchId,
+            "transactionId": "",
+            "timestamp": new Date()
+        });
+
+    $.ajax({
+        url: _SitePath + '/TransferFunds',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        method: "POST",
+        data: data,
+        success: function (response) {
+            $("#btnGetBatchTransferRequest").click();
+            $("#divTransferFunds").hide();
+            alertSuccess("POST TransferFunds Success");
+
+        },
+        error: function (error) {
+            console.log(error);
+            alertError(error.responseJSON.error.message);
+        }
+    });
 }
 
 function hideActions() {
@@ -470,6 +578,14 @@ function alertError(msgError) {
     });
 }
 
+function alertWarningInputData() {
+    Swal.fire({
+        type: 'warning',
+        title: 'Something wrong',
+        text: 'Please, validate input data'
+    });
+}
+
 function getCompanyByUser(userName) {
     $.ajax({
         xhrFields: {
@@ -497,4 +613,20 @@ function getCompanyByUser(userName) {
         }
     });
     
+}
+
+function blockUICustom() {
+    $.blockUI({
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            fontSize: '10px'
+        },
+        baseZ: 2000
+    }); 
 }
