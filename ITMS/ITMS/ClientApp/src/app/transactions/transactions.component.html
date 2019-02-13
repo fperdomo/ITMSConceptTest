@@ -1,0 +1,62 @@
+<div class="container" id="divTransactions">
+  <h3>Transactions</h3>
+  <p *ngIf="!dataSource"><em>Loading...</em></p>
+  <div class="row">
+    <div class="col-lg-12">
+
+
+      <div class="example-header">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+      </div>
+
+      <div class="example-container mat-elevation-z8">
+
+        <mat-table [dataSource]="dataSource" matSort>
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="transactionId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.transactionId}} </mat-cell>
+          </ng-container>
+
+          <!-- Name -->
+          <ng-container matColumnDef="transactionName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.transactionName}} </mat-cell>
+          </ng-container>
+
+          <!-- Working Currency -->
+          <ng-container matColumnDef="workingCurrency">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Working Currency </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.workingCurrency}} </mat-cell>
+          </ng-container>
+
+          <!-- Fund Balance -->
+          <ng-container matColumnDef="fundBalance">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fund Balance </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.fundBalance}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="btnSubmitTrx">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
+            <mat-cell *matCellDef="let row"> <button type="button" class="btn btn-link" (click)="actionSubmitTrx(row)"> Submit Trx </button>  </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="btnPreSett">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
+            <mat-cell *matCellDef="let row"> <button type="button" class="btn btn-link" (click)="actionPreSett(row)"> Pre Sett </button>  </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;">
+          </mat-row>
+        </mat-table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+

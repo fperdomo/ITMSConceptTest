@@ -1,0 +1,10 @@
+<body>
+  <app-nav-menu></app-nav-menu>
+  <div class="container">
+    <router-outlet></router-outlet>
+    <input type="checkbox" id="companies" [checked]="toggleCompanies" (click)="toggleCompanies()">
+    <label for="heroes">Companies</label>
+  </div>
+</body>
+
+<app-companies *ngIf="showCompanies"></app-companies>
