@@ -53,8 +53,12 @@ $(function () {
                     });
 
                     $('#companies_table').show();
+                    if ($.fn.dataTable.isDataTable('#companies_table')) {
+                        table = $('#companies_table').DataTable();
+                        table.destroy();
+                    }
                     $('#companies_table').DataTable();
-
+                   
                 });
 
             },
@@ -114,9 +118,15 @@ $(function () {
                     });
 
                     $('#transactions_table').show();
+                    if ($.fn.dataTable.isDataTable('#transactions_table')) {
+                        table = $('#transactions_table').DataTable();
+                        table.destroy();
+                    }
+
                     $('#transactions_table').DataTable({
                         "order": [[6, "desc"]]
                     });
+                   
                 });
 
             },
@@ -179,6 +189,10 @@ $(function () {
                     });
 
                     $('#batchtransfertequest_table').show();
+                    if ($.fn.dataTable.isDataTable('#batchtransfertequest_table')) {
+                        table = $('#batchtransfertequest_table').DataTable();
+                        table.destroy();
+                    }
                     $('#batchtransfertequest_table').DataTable({
                         "order": [[4, "desc"]]
                     });
@@ -535,9 +549,23 @@ function hideActions() {
 
 function getDateInFormat(stringDate) {
     var d = new Date(stringDate);
+
+    var date = d.getDate();
+    var dateStr = date;
+    if (date < 10)
+        dateStr = "0" + date;
+
+    var month = d.getMonth(); //Be careful! January is 0 not 1
+    month = month + 1;
+    var monthStr = month;
+    if (month < 10)
+        monthStr = "0" + month;
+
+    var year = d.getFullYear();
+
     minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes();
     hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours();
-    return d.toLocaleDateString() + ' ' + hours + ':' + minutes;   
+    return year + "/" + monthStr + "/" + dateStr + ' ' + hours + ':' + minutes;   
 }
 
 function makeRequestId() {
