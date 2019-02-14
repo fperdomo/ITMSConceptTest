@@ -12,7 +12,7 @@ import { CompaniesService } from './companies.service';
   styleUrls: ['./companies.component.css']
 })
 export class CompaniesComponent implements OnInit {
-  displayedColumns = ['companyId', 'companyName', 'workingCurrency', 'fundBalance', 'btnSubmitTrx', 'btnPreSett'];
+  displayedColumns = ['companyId', 'companyName', 'workingCurrency', 'fundBalance', 'actions'];
   companies: Company[] = [];
   editCompany: Company; // the company currently being edited
   dataSource: MatTableDataSource<Company>;
@@ -26,9 +26,7 @@ export class CompaniesComponent implements OnInit {
   ngOnInit() {
     this.getCompanies();
     
-  }
-
-  
+  }  
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -44,6 +42,11 @@ export class CompaniesComponent implements OnInit {
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.sort(<MatSortable>{
+          id: 'id',
+          start: 'desc'
+        }
+        );x
       });
   }
 

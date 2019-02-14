@@ -39,14 +39,19 @@
             <mat-cell *matCellDef="let row"> {{row.fundBalance}} </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="btnSubmitTrx">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
-            <mat-cell *matCellDef="let row"> <button type="button" class="btn btn-link" (click)="actionSubmitTrx(row)"> Submit Trx </button>  </mat-cell>
-          </ng-container>
+         
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  Action </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-menu #appMenu="matMenu">
+                <button mat-menu-item (click)="actionSubmitTrx(row)"> Transfer Funds</button>
+                <button mat-menu-item (click)="actionPreSett(row)"> Prepare Settlement </button>
+              </mat-menu>
 
-          <ng-container matColumnDef="btnPreSett">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
-            <mat-cell *matCellDef="let row"> <button type="button" class="btn btn-link" (click)="actionPreSett(row)"> Pre Sett </button>  </mat-cell>
+              <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

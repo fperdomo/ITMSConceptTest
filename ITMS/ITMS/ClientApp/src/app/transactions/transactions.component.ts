@@ -8,11 +8,12 @@ import { TransactionsService } from './transactions.service';
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
-  providers: [ TransactionsService ],
+  providers: [TransactionsService],
   styleUrls: ['./transactions.component.css']
 })
 export class TransactionsComponent implements OnInit {
-  displayedColumns = ['transactionId', 'transactionName', 'workingCurrency', 'fundBalance', 'btnSubmitTrx', 'btnPreSett'];
+  displayedColumns = ['requestId', 'fromCompany', 'toCompany', 'state',
+    'currency', 'amount', 'date', 'description', 'actions'];
   transactions: Transaction[] = [];
   editTransaction: Transaction; // the transaction currently being edited
   dataSource: MatTableDataSource<Transaction>;
@@ -25,10 +26,8 @@ export class TransactionsComponent implements OnInit {
 
   ngOnInit() {
     this.getTransactions();
-    
-  }
 
-  
+  }
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -39,6 +38,7 @@ export class TransactionsComponent implements OnInit {
   getTransactions(): void {
     this.transactionsService.getTransactions()
       .subscribe(transactions => {
+
         this.dataSource = new MatTableDataSource(transactions);
         this.transactions = transactions;
 
@@ -47,25 +47,6 @@ export class TransactionsComponent implements OnInit {
       });
   }
 
-  add(transactionName: string): void {
-    this.editTransaction = undefined;
-    transactionName = transactionName.trim();
-    if (!transactionName) { return; }
-
-    // The server will generate the id for this new transaction
-    const newTransaction: Transaction = { transactionName } as Transaction;
-    this.transactionsService.addTransaction(newTransaction)
-      .subscribe(transaction => this.transactions.push(transaction));
-  }
-
-  delete(transaction: Transaction): void {
-    this.transactions = this.transactions.filter(h => h !== transaction);
-    this.transactionsService.deleteTransaction(transaction.transactionId).subscribe();
-    /*
-    // oops ... subscribe() is missing so nothing happens
-    this.transactionsService.deleteTransaction(transaction.id);
-    */
-  }
 
   edit(transaction) {
     this.editTransaction = transaction;
@@ -79,23 +60,35 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
-  update() {
-    if (this.editTransaction) {
-      this.transactionsService.updateTransaction(this.editTransaction)
-        .subscribe(transaction => {
-          // replace the transaction in the transactions list with update from server
-          const ix = transaction ? this.transactions.findIndex(h => h.transactionId === transaction.transactionId) : -1;
-          if (ix > -1) { this.transactions[ix] = transaction; }
-        });
-      this.editTransaction = undefined;
-    }
+  actionUpdateTrx(transaction: Transaction): void {
+    alert(transaction.requestId);
   }
 
-  actionSubmitTrx(transaction: Transaction): void {
-    alert(transaction.transactionId);
+  companyToStr(companyName : string) {
+    return companyName.split("#")[1];
   }
 
-  actionPreSett(transaction: Transaction): void {
-    alert("LALALA" + transaction.transactionId);
+
+  getDateInFormat(stringDate: string) {
+    var d = new Date(stringDate);
+
+    var date = d.getDate();
+    var dateStr = date.toString();
+    if (date < 10)
+      dateStr = "0" + date;
+
+    var month = d.getMonth(); //Be careful! January is 0 not 1
+    month = month + 1;
+    var monthStr = month.toString();
+    if (month < 10)
+      monthStr = "0" + month;
+
+    var year = d.getFullYear();
+
+    var minutes = d.getMinutes().toString().length === 1 ? '0' + d.getMinutes() : d.getMinutes().toString();
+    var hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours().toString();
+    return year + "/" + monthStr + "/" + dateStr + ' ' + hours + ':' + minutes;
   }
+
+  
 }
