@@ -42,11 +42,7 @@ export class CompaniesComponent implements OnInit {
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.dataSource.sort(<MatSortable>{
-          id: 'id',
-          start: 'desc'
-        }
-        );x
+        
       });
   }
 
