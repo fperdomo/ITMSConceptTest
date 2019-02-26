@@ -12,7 +12,7 @@ import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json',
-    'Authorization': 'ycXeDj6508TmOaTZbuElwtVhFFOGGTdXCHGkwyOIFnVLEZcOzP44pMI02EiRSBxj'
+    'Authorization': 'pUAcVmniAnzc3EYLPEF3FFFCS77rLNQQ96hrLt6inovRNWtZJY5DoGi8E9nEGZQo'
   })
 };
 

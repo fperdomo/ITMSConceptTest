@@ -1,67 +1,39 @@
 <div class="container" id="divSubmitTrxs">
-  <h3>SubmitTrxs</h3>
-  <p *ngIf="!submitTrxs"><em>Loading...</em></p>
-  <div class="row">
-    <div class="col-lg-12">
 
-
-      <div class="example-header">
-        <mat-form-field>
-          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-        </mat-form-field>
-      </div>
-
-      <div class="example-container mat-elevation-z8">
-
-        <mat-table [dataSource]="dataSource" matSort>
-
-          <!-- ID Column -->
-          <ng-container matColumnDef="submitTrxId">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.submitTrxId}} </mat-cell>
-          </ng-container>
-
-          <!-- Name -->
-          <ng-container matColumnDef="submitTrxName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.submitTrxName}} </mat-cell>
-          </ng-container>
-
-          <!-- Working Currency -->
-          <ng-container matColumnDef="workingCurrency">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Working Currency </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.workingCurrency}} </mat-cell>
-          </ng-container>
-
-          <!-- Fund Balance -->
-          <ng-container matColumnDef="fundBalance">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Fund Balance </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.fundBalance}} </mat-cell>
-          </ng-container>
-
-         
-          <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>  Action </mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <mat-menu #appMenu="matMenu">
-                <button mat-menu-item (click)="actionSubmitTrx(row)"> Transfer Funds</button>
-                <button mat-menu-item (click)="actionPreSett(row)"> Prepare Settlement </button>
-              </mat-menu>
-
-              <button mat-icon-button [matMenuTriggerFor]="appMenu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-            </mat-cell>
-          </ng-container>
-
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;">
-          </mat-row>
-        </mat-table>
-
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-      </div>
-    </div>
+  {{diagnostic}}
+  <div class="form-group">
+    <label for="name">requestId</label>
+    <input type="text" class="form-control" id="requestId"
+           required
+           [(ngModel)]="model.requestId" name="requestId">
   </div>
+
+  <div class="form-group">
+    <label for="toCompanyId">toCompanyId</label>
+    <input type="text" class="form-control" id="toCompanyId"
+           [(ngModel)]="model.toCompanyId" name="toCompanyId">
+  </div>
+
+  <div class="form-group">
+    <label for="currency">Hero Power</label>
+    <select class="form-control" id="currency"
+            required
+            [(ngModel)]="model.currency" name="power">
+      <option *ngFor="let cur of currencies" [value]="cur">{{cur}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="amount">amount</label>
+    <input type="number" class="form-control" id="amount"
+           [(ngModel)]="model.amount" name="amount">
+  </div>
+
+  <div class="form-group">
+    <label for="description">description</label>
+    <input type="text" class="form-control" id="description"
+           [(ngModel)]="model.description" name="description">
+  </div>
+
 </div>
 

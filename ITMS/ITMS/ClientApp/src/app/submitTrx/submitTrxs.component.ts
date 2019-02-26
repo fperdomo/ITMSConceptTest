@@ -16,6 +16,7 @@ export class SubmitTrxsComponent implements OnInit {
   submitTrxs: SubmitTrx[] = [];
   editSubmitTrx: SubmitTrx; // the submitTrx currently being edited
   dataSource: MatTableDataSource<SubmitTrx>;
+  currencies: ['USD', 'EUR'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

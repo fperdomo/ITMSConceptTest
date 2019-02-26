@@ -16,6 +16,8 @@ export class CompaniesComponent implements OnInit {
   companies: Company[] = [];
   editCompany: Company; // the company currently being edited
   dataSource: MatTableDataSource<Company>;
+  showSubmitTrx: false;
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -91,6 +93,7 @@ export class CompaniesComponent implements OnInit {
   }
 
   actionSubmitTrx(company: Company): void {
+    //showSubmitTrx = true;
     alert(company.companyId);
   }
 

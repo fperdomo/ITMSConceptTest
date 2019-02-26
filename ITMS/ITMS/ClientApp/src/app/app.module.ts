@@ -11,25 +11,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 
 import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
 import { CompaniesComponent } from './companies/companies.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { BatchTransfersComponent } from './batchTransfer/batchTransfers.component';
+import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     CompaniesComponent,
     TransactionsComponent,
-    BatchTransfersComponent
+    BatchTransfersComponent,
+    SubmitTrxsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -37,8 +35,8 @@ import { BatchTransfersComponent } from './batchTransfer/batchTransfers.componen
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      //{ path: 'counter', component: CounterComponent },
+      //{ path: 'fetch-data', component: FetchDataComponent },
     ]),
     MatInputModule,
     MatTableModule,
