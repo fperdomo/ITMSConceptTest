@@ -18,7 +18,7 @@ const httpOptions = {
 
 @Injectable()
 export class SubmitTrxsService {
-  submitTrxsUrl = 'http://104.196.27.3:3000/api/SubmitTrx';  // URL to web api
+  submitTrxsUrl = 'http://104.196.27.3:3000/api/SubmitTransferRequest';  // URL to web api
   private handleError: HandleError;
 
   constructor(

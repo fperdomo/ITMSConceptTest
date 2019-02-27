@@ -10,14 +10,7 @@
     <div class="col-xs-10 col-md-4 col-lg-4 text-left" style="margin-bottom:5px;"><button type="button" class="btn btn-primary" id="btnGetCompanies" (click)="toggleCompanies()">GET Companies</button></div>
     <div class="col-xs-11 col-md-4 col-lg-4 text-center" style="margin-bottom:5px;"><button type="button" class="btn btn-primary" id="btnGetTrxs" (click)="toggleTransactions()">GET Transactions</button></div>
     <div class="col-xs-10 col-md-4 col-lg-4 text-right" style="margin-bottom:5px;"> <button type="button" class="btn btn-primary pull-right" id="btnGetBatchTransferRequest" (click)="toggleBatchTransfers()">Get BatchTransferRequest</button></div>
-
-
-  </div>
-
-  <div class="row" style="margin-top:5px;" id="hdButtons">
-    <div class="col-xs-10 col-md-4 col-lg-4 text-left" style="margin-bottom:5px;"><button type="button" class="btn btn-primary" id="btnSubmitTrx" (click)="toggleSubmitTrx()">Submit Trx</button></div>
-
-
+    
   </div>
 
   <app-companies *ngIf="showCompanies"></app-companies>
@@ -26,7 +19,7 @@
 
   <app-batchTransfers *ngIf="showBatchTransfers"></app-batchTransfers>
   
-  <app-submitTrxs *ngIf="showSubmitTrxs"></app-submitTrxs>
+
 
 </div>
 <hr>

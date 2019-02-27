@@ -1,39 +1,48 @@
 <div class="container" id="divSubmitTrxs">
-
-  {{diagnostic}}
-  <div class="form-group">
-    <label for="name">requestId</label>
-    <input type="text" class="form-control" id="requestId"
-           required
-           [(ngModel)]="model.requestId" name="requestId">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2>Angular 6 Reactive Form Validation</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Request Id</label>
+          <input type="text" formControlName="requestId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.requestId.errors }" />
+          <div *ngIf="submitted && f.requestId.errors" class="invalid-feedback">
+            <div *ngIf="f.requestId.errors.required">RequestId is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>To CompanyId</label>
+          <input type="text" formControlName="toCompanyId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.toCompanyId.errors }" />
+          <div *ngIf="submitted && f.toCompanyId.errors" class="invalid-feedback">
+            <div *ngIf="f.toCompanyId.errors.required">To CompanyId is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Currency</label>
+          <input type="text" formControlName="currency" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.currency.errors }" />
+          <div *ngIf="submitted && f.currency.errors" class="invalid-feedback">
+            <div *ngIf="f.currency.errors.required">Currency is required</div>
+            <div *ngIf="f.currency.errors.currency">Currency must be a valid currency</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" formControlName="amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.amount.errors }" />
+          <div *ngIf="submitted && f.amount.errors" class="invalid-feedback">
+            <div *ngIf="f.amount.errors.required">Amount is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" formControlName="description" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
+          <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+          </div>
+        </div>
+        <div class="form-group">
+          <button [disabled]="loading" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
   </div>
-
-  <div class="form-group">
-    <label for="toCompanyId">toCompanyId</label>
-    <input type="text" class="form-control" id="toCompanyId"
-           [(ngModel)]="model.toCompanyId" name="toCompanyId">
-  </div>
-
-  <div class="form-group">
-    <label for="currency">Hero Power</label>
-    <select class="form-control" id="currency"
-            required
-            [(ngModel)]="model.currency" name="power">
-      <option *ngFor="let cur of currencies" [value]="cur">{{cur}}</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="amount">amount</label>
-    <input type="number" class="form-control" id="amount"
-           [(ngModel)]="model.amount" name="amount">
-  </div>
-
-  <div class="form-group">
-    <label for="description">description</label>
-    <input type="text" class="form-control" id="description"
-           [(ngModel)]="model.description" name="description">
-  </div>
-
 </div>
 

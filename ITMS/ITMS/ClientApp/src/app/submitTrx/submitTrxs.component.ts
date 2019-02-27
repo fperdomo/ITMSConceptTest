@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { SubmitTrx } from './submitTrx';
+import { SubmitTrx, SubmitTrxDetail } from './submitTrx';
 import { SubmitTrxsService } from './submitTrxs.service';
 
 @Component({
@@ -12,90 +13,56 @@ import { SubmitTrxsService } from './submitTrxs.service';
   styleUrls: ['./submitTrxs.component.css']
 })
 export class SubmitTrxsComponent implements OnInit {
-  displayedColumns = ['submitTrxId', 'submitTrxName', 'workingCurrency', 'fundBalance', 'actions'];
-  submitTrxs: SubmitTrx[] = [];
-  editSubmitTrx: SubmitTrx; // the submitTrx currently being edited
-  dataSource: MatTableDataSource<SubmitTrx>;
+  registerForm: FormGroup;
+  submitted = false;
   currencies: ['USD', 'EUR'];
+  @Input('toCompanyId') toCompanyId: string;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-
-  constructor(private submitTrxsService: SubmitTrxsService) { }
+  constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.getSubmitTrxs();
-    
-  }  
+    this.registerForm = this.formBuilder.group({
+      requestId: ['', Validators.required],
+      toCompanyId: [this.toCompanyId, Validators.required],
+      currency: ['', Validators.required],
+      amount: ['', Validators.required],
+      description: [''],
+    });
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+
+    this.registerForm.controls['requestId'].setValue("Wiii12");
   }
 
-  getSubmitTrxs(): void {
-    this.submitTrxsService.getSubmitTrxs()
-      .subscribe(submitTrxs => {
-        this.dataSource = new MatTableDataSource(submitTrxs);
-        this.submitTrxs = submitTrxs;
+  // convenience getter for easy access to form fields
+  get f() { return this.registerForm.controls; }
 
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        
-      });
-  }
+  onSubmit() {
+    this.submitted = true;
 
-  //add(submitTrxName: string): void {
-  //  this.editSubmitTrx = undefined;
-  //  submitTrxName = submitTrxName.trim();
-  //  if (!submitTrxName) { return; }
-
-  //  // The server will generate the id for this new submitTrx
-  //  const newSubmitTrx: SubmitTrx = { submitTrxName } as SubmitTrx;
-  //  this.submitTrxsService.addSubmitTrx(newSubmitTrx)
-  //    .subscribe(submitTrx => this.submitTrxs.push(submitTrx));
-  //}
-
-  //delete(submitTrx: SubmitTrx): void {
-  //  this.submitTrxs = this.submitTrxs.filter(h => h !== submitTrx);
-  //  this.submitTrxsService.deleteSubmitTrx(submitTrx.submitTrxId).subscribe();
-  //  /*
-  //  // oops ... subscribe() is missing so nothing happens
-  //  this.submitTrxsService.deleteSubmitTrx(submitTrx.id);
-  //  */
-  //}
-
-  edit(submitTrx) {
-    this.editSubmitTrx = submitTrx;
-  }
-
-  search(searchTerm: string) {
-    this.editSubmitTrx = undefined;
-    if (searchTerm) {
-      this.submitTrxsService.searchSubmitTrxs(searchTerm)
-        .subscribe(submitTrxs => this.submitTrxs = submitTrxs);
+    // stop here if form is invalid
+    if (this.registerForm.invalid) {
+      return;
     }
+    const newDetails: SubmitTrxDetail = {
+      $class: "com.itms.Transfer",
+      currency: this.registerForm.controls["currency"].value,
+      amount: this.registerForm.controls["amount"].value,
+      date: new Date(),
+      description: this.registerForm.controls["description"].value,
+      reasonsRejected: ""
+    }
+
+    const newSubmitTrx: SubmitTrx =
+      {
+        $class: "com.itms.SubmitTransferRequest",
+        requestId: this.registerForm.controls["requestId"].value,
+        toCompanyId: this.registerForm.controls["toCompanyId"].value,
+        details: newDetails
+      } as SubmitTrx;
+
+    this.submitTrxsService.addSubmitTrx(newSubmitTrx)
+      .subscribe(submiit => alert('SUCCESS!! :-)' + submiit.requestId));
+
+    
   }
-
-  //update() {
-  //  if (this.editSubmitTrx) {
-  //    this.submitTrxsService.updateSubmitTrx(this.editSubmitTrx)
-  //      .subscribe(submitTrx => {
-  //        // replace the submitTrx in the submitTrxs list with update from server
-  //        const ix = submitTrx ? this.submitTrxs.findIndex(h => h.submitTrxId === submitTrx.submitTrxId) : -1;
-  //        if (ix > -1) { this.submitTrxs[ix] = submitTrx; }
-  //      });
-  //    this.editSubmitTrx = undefined;
-  //  }
-  //}
-
-  //actionSubmitTrx(submitTrx: SubmitTrx): void {
-  //  alert(submitTrx.submitTrxId);
-  //}
-
-  //actionPreSett(submitTrx: SubmitTrx): void {
-  //  alert("LALALA" + submitTrx.submitTrxId);
-  //}
 }

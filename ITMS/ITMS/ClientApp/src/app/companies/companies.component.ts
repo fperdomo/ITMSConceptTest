@@ -4,6 +4,7 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
 import { Company } from './company';
 import { CompaniesService } from './companies.service';
+import { SubmitTrxsComponent } from '../submitTrx/submitTrxs.component';
 
 @Component({
   selector: 'app-companies',
@@ -16,7 +17,8 @@ export class CompaniesComponent implements OnInit {
   companies: Company[] = [];
   editCompany: Company; // the company currently being edited
   dataSource: MatTableDataSource<Company>;
-  showSubmitTrx: false;
+  showSubmitTrxs= false;
+  @ViewChild(SubmitTrxsComponent) submitTrx;
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -99,5 +101,10 @@ export class CompaniesComponent implements OnInit {
 
   actionPreSett(company: Company): void {
     alert("LALALA" + company.companyId);
+  }
+
+  toggleSubmitTrx(company: Company) {
+     //this.submitTrx.toCompanyId = company.companyId;
+     this.showSubmitTrxs = true;
   }
 }

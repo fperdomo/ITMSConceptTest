@@ -44,7 +44,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>  Action </mat-header-cell>
             <mat-cell *matCellDef="let row">
               <mat-menu #appMenu="matMenu">
-                <button mat-menu-item (click)="actionSubmitTrx(row)"> Submit Transaction</button>
+                <button mat-menu-item (click)="toggleSubmitTrx(row)"> Submit Transaction</button>
                 <button mat-menu-item (click)="actionPreSett(row)"> Prepare Settlement </button>
               </mat-menu>
 
@@ -65,6 +65,7 @@
   </div>
   <div *ngIf="!showSubmitTrx" class="row">
     <div class="col-lg-12">
+      <app-submitTrxs *ngIf="showSubmitTrxs"></app-submitTrxs>
     </div>
   </div>
 </div>

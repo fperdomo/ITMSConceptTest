@@ -35,10 +35,5 @@ export class HomeComponent {
     this.showSubmitTrxs = false;
   }
 
-  toggleSubmitTrx() {
-    this.showCompanies = false;
-    this.showTransactions = false;
-    this.showBatchTransfers = false;
-    this.showSubmitTrxs = true;
-  }
+
 }
