@@ -19,7 +19,7 @@ export class CompaniesComponent implements OnInit {
   dataSource: MatTableDataSource<Company>;
   showSubmitTrxs= false;
   @ViewChild(SubmitTrxsComponent) submitTrx;
-
+  toCompanyId: "";
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -104,7 +104,7 @@ export class CompaniesComponent implements OnInit {
   }
 
   toggleSubmitTrx(company: Company) {
-     //this.submitTrx.toCompanyId = company.companyId;
+    this.toCompanyId = company.companyId;
      this.showSubmitTrxs = true;
   }
 }

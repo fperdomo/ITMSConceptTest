@@ -16,7 +16,7 @@ export class SubmitTrxsComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
   currencies: ['USD', 'EUR'];
-  @Input('toCompanyId') toCompanyId: string;
+  @Input() toCompanyId: string;
 
   constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder) { }
 
