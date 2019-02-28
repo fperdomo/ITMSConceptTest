@@ -65,7 +65,7 @@
   </div>
   <div *ngIf="!showSubmitTrx" class="row">
     <div class="col-lg-12">
-      <app-submitTrxs *ngIf="showSubmitTrxs"></app-submitTrxs>
+      <app-submitTrxs [toCompanyId]="toCompanyId" *ngIf="showSubmitTrxs"></app-submitTrxs>
     </div>
   </div>
 </div>

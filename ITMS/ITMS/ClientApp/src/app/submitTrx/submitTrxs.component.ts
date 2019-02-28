@@ -15,7 +15,8 @@ import { SubmitTrxsService } from './submitTrxs.service';
 export class SubmitTrxsComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
-  currencies: ['USD', 'EUR'];
+  currency: any = "USD";
+  currencies: any = ["USD", "EUR"];
   @Input('toCompanyId') toCompanyId: string;
 
   constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder) { }
@@ -30,7 +31,17 @@ export class SubmitTrxsComponent implements OnInit {
     });
 
 
-    this.registerForm.controls['requestId'].setValue("Wiii12");
+   this.registerForm.controls['requestId'].setValue(this.makeRequestId());
+  }
+
+  makeRequestId() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 5; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
   }
 
   // convenience getter for easy access to form fields
