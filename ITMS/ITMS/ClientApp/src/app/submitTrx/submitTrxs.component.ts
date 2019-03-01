@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, TemplateRef  } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { SubmitTrx, SubmitTrxDetail } from './submitTrx';
 import { SubmitTrxsService } from './submitTrxs.service';
@@ -13,13 +14,15 @@ import { SubmitTrxsService } from './submitTrxs.service';
   styleUrls: ['./submitTrxs.component.css']
 })
 export class SubmitTrxsComponent implements OnInit {
+  modalRef: BsModalRef;
+  message: string;
   registerForm: FormGroup;
   submitted = false;
   currency: any = "USD";
   currencies: any = ["USD", "EUR"];
   @Input('toCompanyId') toCompanyId: string;
 
-  constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder) { }
+  constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder, private modalService: BsModalService) { }
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
@@ -75,5 +78,19 @@ export class SubmitTrxsComponent implements OnInit {
       .subscribe(submiit => alert('SUCCESS!! :-)' + submiit.requestId));
 
     
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  confirm(): void {
+    this.message = 'Confirmed!';
+    this.modalRef.hide();
+  }
+
+  decline(): void {
+    this.message = 'Declined!';
+    this.modalRef.hide();
   }
 }

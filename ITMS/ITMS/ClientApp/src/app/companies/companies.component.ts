@@ -107,4 +107,6 @@ export class CompaniesComponent implements OnInit {
      this.toCompanyId = company.companyId.toString();
      this.showSubmitTrxs = true;
   }
+
+
 }
