@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertsModule } from 'angular-alert-module';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -50,7 +51,8 @@ import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
     MatButtonModule,
     MatIconModule,
     ReactiveFormsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    AlertsModule.forRoot()
   ],
   providers: [
     HttpErrorHandler,

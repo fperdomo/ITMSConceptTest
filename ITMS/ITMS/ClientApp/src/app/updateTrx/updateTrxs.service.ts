@@ -6,7 +6,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { SubmitTrx } from './submitTrx';
+import { UpdateTrx } from './updateTrx';
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 const httpOptions = {
@@ -17,22 +17,22 @@ const httpOptions = {
 };
 
 @Injectable()
-export class SubmitTrxsService {
-  submitTrxsUrl = 'http://104.196.27.3:3000/api/SubmitTransferRequest';  // URL to web api
+export class UpdateTrxsService {
+  updateTrxsUrl = 'http://104.196.27.3:3000/api/UpdateTrasferRequest';  // URL to web api
   private handleError: HandleError;
 
   constructor(
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler) {
-    this.handleError = httpErrorHandler.createHandleError('SubmitTrxsService');
+    this.handleError = httpErrorHandler.createHandleError('UpdateTrxsService');
   }
   
 
-  /** POST: add a new submitTrx to the database */
-  addSubmitTrx (submitTrx: SubmitTrx): Observable<SubmitTrx> {
-    return this.http.post<SubmitTrx>(this.submitTrxsUrl, submitTrx, httpOptions)
+  /** POST: add a new updateTrx to the database */
+  addUpdateTrx (updateTrx: UpdateTrx): Observable<UpdateTrx> {
+    return this.http.post<UpdateTrx>(this.updateTrxsUrl, updateTrx, httpOptions)
       .pipe(
-        catchError(this.handleError('addSubmitTrx', submitTrx))
+        catchError(this.handleError('addUpdateTrx', updateTrx))
       );
   }
 

@@ -44,8 +44,8 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>  Action </mat-header-cell>
             <mat-cell *matCellDef="let row">
               <mat-menu #appMenu="matMenu">
-                <button mat-menu-item (click)="toggleSubmitTrx(row, template)"> Submit Transaction</button>
-                <button mat-menu-item (click)="actionPreSett(row)"> Prepare Settlement </button>
+                <button mat-menu-item (click)="openModalSubmitTrx(row, template)"> Submit Transaction</button>
+                <button mat-menu-item (click)="openModalPrepareSettlement(row,templatePrepareSettlement )"> Prepare Settlement </button>
               </mat-menu>
 
               <button mat-icon-button [matMenuTriggerFor]="appMenu">
@@ -63,10 +63,20 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!showSubmitTrx" class="row">
-    <div class="col-lg-12">
-      <app-submitTrxs [toCompanyId]="toCompanyId" *ngIf="showSubmitTrxs"></app-submitTrxs>
+  <ng-template #template>
+    <div class="modal-body">
+      <app-submitTrxs [toCompanyId]="toCompanyId" [modalRef]="modalRef" ></app-submitTrxs>
     </div>
-  </div>
+  </ng-template>
+
+  <ng-template #templatePrepareSettlement>
+    <div class="modal-body text-center">
+      <h5>Are you sure??</h5>
+      <p>You are going to Prepare Settlement for Company:  {{toCompanyId}}</p>
+      <button type="button" class="btn btn-default" (click)="confirmPrepareSettlement()">Yes</button>
+      <button type="button" class="btn btn-primary" (click)="declinePrepareSettlement()">No</button>
+    </div>
+  </ng-template>
+
 </div>
 

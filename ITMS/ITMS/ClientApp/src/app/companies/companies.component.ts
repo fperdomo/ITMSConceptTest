@@ -1,8 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef} from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertsService } from 'angular-alert-module';
 
-import { Company } from './company';
+import { Company, PrepareSettlement, Rate } from './company';
 import { CompaniesService } from './companies.service';
 import { SubmitTrxsComponent } from '../submitTrx/submitTrxs.component';
 
@@ -20,12 +22,15 @@ export class CompaniesComponent implements OnInit {
   showSubmitTrxs= false;
   @ViewChild(SubmitTrxsComponent) submitTrx;
   toCompanyId = "";
+  modalRef: BsModalRef;
+  message: string;
+  rateArray: Rate[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private companiesService: CompaniesService) { }
+  constructor(private companiesService: CompaniesService, private modalService: BsModalService, private alerts: AlertsService) { }
 
   ngOnInit() {
     this.getCompanies();
@@ -50,29 +55,6 @@ export class CompaniesComponent implements OnInit {
       });
   }
 
-  add(companyName: string): void {
-    this.editCompany = undefined;
-    companyName = companyName.trim();
-    if (!companyName) { return; }
-
-    // The server will generate the id for this new company
-    const newCompany: Company = { companyName } as Company;
-    this.companiesService.addCompany(newCompany)
-      .subscribe(company => this.companies.push(company));
-  }
-
-  delete(company: Company): void {
-    this.companies = this.companies.filter(h => h !== company);
-    this.companiesService.deleteCompany(company.companyId).subscribe();
-    /*
-    // oops ... subscribe() is missing so nothing happens
-    this.companiesService.deleteCompany(company.id);
-    */
-  }
-
-  edit(company) {
-    this.editCompany = company;
-  }
 
   search(searchTerm: string) {
     this.editCompany = undefined;
@@ -81,32 +63,61 @@ export class CompaniesComponent implements OnInit {
         .subscribe(companies => this.companies = companies);
     }
   }
-
-  update() {
-    if (this.editCompany) {
-      this.companiesService.updateCompany(this.editCompany)
-        .subscribe(company => {
-          // replace the company in the companies list with update from server
-          const ix = company ? this.companies.findIndex(h => h.companyId === company.companyId) : -1;
-          if (ix > -1) { this.companies[ix] = company; }
-        });
-      this.editCompany = undefined;
-    }
+  
+  openModalSubmitTrx(company: Company, template: TemplateRef<any>) {
+    this.toCompanyId = company.companyId.toString();
+    this.modalRef = this.modalService.show(template, { class: 'modal-md' });
   }
 
-  actionSubmitTrx(company: Company): void {
-    //showSubmitTrx = true;
-    alert(company.companyId);
+  openModalPrepareSettlement(company: Company, template: TemplateRef<any>) {
+    this.toCompanyId = company.companyId.toString();
+    this.modalRef = this.modalService.show(template, { class: 'modal-md' });
   }
 
-  actionPreSett(company: Company): void {
-    alert("LALALA" + company.companyId);
+  confirmPrepareSettlement(): void {
+    const newRate: Rate = {
+      $class: "com.itms.Transfer",
+      to: "EUR",
+      rate: 0.75
+    };
+
+    this.rateArray = [newRate];
+
+
+    const newPrepareSettlement: PrepareSettlement =
+      {
+        $class: "com.itms.PrepareSettlement",
+        batchId: this.makeRequestPrepId(),
+        companyId: this.toCompanyId,
+        timestamp: new Date(),
+        transactionId: "",
+        rates: this.rateArray
+      } as PrepareSettlement;
+
+    this.companiesService.actionPrepareSettlement(newPrepareSettlement)
+      .subscribe(submiit => {
+        this.alerts.setMessage('PrepareSettlement Transaction Success', 'success');
+        this.alerts.setMessage('WARNING: ExchangeRate is Hardcode', 'warn');
+        this.modalRef.hide();
+      }
+      );    
   }
 
-  toggleSubmitTrx(company: Company) {
-     this.toCompanyId = company.companyId.toString();
-     this.showSubmitTrxs = true;
+  makeRequestPrepId() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 6; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
   }
 
+
+  declinePrepareSettlement(): void {
+    this.modalRef.hide();
+  }
+
+  
 
 }

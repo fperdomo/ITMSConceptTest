@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
-import { Transaction } from './transaction';
+import { Transaction, TransactionDetail } from './transaction';
 import { TransactionsService } from './transactions.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { TransactionsService } from './transactions.service';
 })
 export class TransactionsComponent implements OnInit {
   displayedColumns = ['requestId', 'fromCompany', 'toCompany', 'state',
-    'currency', 'amount', 'date', 'description', 'actions'];
+    'details.currency', 'details.amount', 'details.date', 'details.description', 'details.reasonsRejected', 'actions'];
   transactions: Transaction[] = [];
   editTransaction: Transaction; // the transaction currently being edited
   dataSource: MatTableDataSource<Transaction>;
@@ -40,6 +40,16 @@ export class TransactionsComponent implements OnInit {
       .subscribe(transactions => {
 
         this.dataSource = new MatTableDataSource(transactions);
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch (property) {
+            case 'details.currency': return item.details.currency;
+            case 'details.amount': return item.details.amount;
+            case 'details.date': return item.details.date;
+            case 'details.description': return item.details.description;
+            case 'details.reasonsRejected': return item.details.reasonsRejected;
+            default: return item[property];
+          }
+        };
         this.transactions = transactions;
 
         this.dataSource.paginator = this.paginator;

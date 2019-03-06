@@ -40,31 +40,31 @@
           </ng-container>
 
           <!-- currency -->
-          <ng-container matColumnDef="currency">
+          <ng-container matColumnDef="details.currency">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Currency </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.details.currency}} </mat-cell>
           </ng-container>
 
           <!-- amount -->
-          <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="details.amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.details.amount}} </mat-cell>
           </ng-container>
 
-          <!-- amount -->
-          <ng-container matColumnDef="date">
+          <!-- date -->
+          <ng-container matColumnDef="details.date">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{ getDateInFormat(row.details.date) }} </mat-cell>
           </ng-container>
 
           <!-- description -->
-          <ng-container matColumnDef="description">
+          <ng-container matColumnDef="details.description">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.details.description}} </mat-cell>
           </ng-container>
 
           <!-- reasonsRejected -->
-          <ng-container matColumnDef="reasonsRejected">
+          <ng-container matColumnDef="details.reasonsRejected">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Reasons Rejected </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.details.reasonsRejected}} </mat-cell>
           </ng-container>

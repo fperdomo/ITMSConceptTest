@@ -4,31 +4,30 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AlertsService } from 'angular-alert-module';
-import { AlertsModule } from 'angular-alert-module';
 
 
-import { SubmitTrx, SubmitTrxDetail } from './submitTrx';
-import { SubmitTrxsService } from './submitTrxs.service';
+import { UpdateTrx } from './updateTrx';
+import { UpdateTrxsService } from './updateTrxs.service';
 
 
 @Component({
-  selector: 'app-submitTrxs',
-  templateUrl: './submitTrxs.component.html',
-  providers: [ SubmitTrxsService ],
-  styleUrls: ['./submitTrxs.component.css']
+  selector: 'app-updateTrxs',
+  templateUrl: './updateTrxs.component.html',
+  providers: [ UpdateTrxsService ],
+  styleUrls: ['./updateTrxs.component.css']
 })
-export class SubmitTrxsComponent implements OnInit {
+export class UpdateTrxsComponent implements OnInit {
  
   message: string;
   registerForm: FormGroup;
-  submitted = false;
+  updateted = false;
   currency: any = "USD";
   currencies: any = ["USD", "EUR"];
   @Input('toCompanyId') toCompanyId: string;
   @Input('modalRef') modalRef: BsModalRef;
  
 
-  constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder,
+  constructor(private updateTrxsService: UpdateTrxsService, private formBuilder: FormBuilder,
     private modalService: BsModalService, private alerts: AlertsService) { }
 
   ngOnInit() {
@@ -59,33 +58,28 @@ export class SubmitTrxsComponent implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
 
-  onSubmit() {
-    this.submitted = true;
+  onUpdate() {
+    this.updateted = true;
 
     // stop here if form is invalid
     if (this.registerForm.invalid) {
       return;
     }
-    const newDetails: SubmitTrxDetail = {
-      $class: "com.itms.Transfer",
-      currency: this.registerForm.controls["currency"].value,
-      amount: this.registerForm.controls["amount"].value,
-      date: new Date(),
-      description: this.registerForm.controls["description"].value,
-      reasonsRejected: ""
-    }
+   
 
-    const newSubmitTrx: SubmitTrx =
+    const newUpdateTrx: UpdateTrx =
       {
-        $class: "com.itms.SubmitTransferRequest",
+        $class: "com.itms.UpdateTrasferRequest",
         requestId: this.registerForm.controls["requestId"].value,
-        toCompanyId: this.registerForm.controls["toCompanyId"].value,
-        details: newDetails
-      } as SubmitTrx;
+        state: this.registerForm.controls["state"].value,
+        reasonsRejected: this.registerForm.controls["reasons"].value,
+        transactionId: "",
+        timestamp: new Date()
+      } as UpdateTrx;
 
-    this.submitTrxsService.addSubmitTrx(newSubmitTrx)
+    this.updateTrxsService.addUpdateTrx(newUpdateTrx)
       .subscribe(submiit => {
-        this.alerts.setMessage('POST Transaction Success', 'success');
+        this.alerts.setMessage('Update Transaction Success', 'success');
         this.modalRef.hide();
       }
       );    

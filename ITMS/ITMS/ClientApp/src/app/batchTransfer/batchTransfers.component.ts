@@ -12,24 +12,21 @@ import { BatchTransfersService } from './batchTransfers.service';
   styleUrls: ['./batchTransfers.component.css']
 })
 export class BatchTransfersComponent implements OnInit {
-  displayedColumns = ['batchId', 'state', 'currency', 'amount', 'date', 'creditor',
-    'debtor', 'to', 'rate', 'actions'];
+  displayedColumns = ['batchId', 'state', 'settlement.currency', 'settlement.amount', 'settlement.date', 'settlement.creditor',
+    'settlement.debtor', 'rates[0].to', 'rates[0].rate', 'actions'];
   batchTransfers: BatchTransfer[] = [];
   editBatchTransfer: BatchTransfer; // the batchTransfer currently being edited
   dataSource: MatTableDataSource<BatchTransfer>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
-
+  
   constructor(private batchTransfersService: BatchTransfersService) { }
 
   ngOnInit() {
     this.getBatchTransfers();
     
-  }
-
-  
+  }  
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -41,6 +38,23 @@ export class BatchTransfersComponent implements OnInit {
     this.batchTransfersService.getBatchTransfers()
       .subscribe(batchTransfers => {
         this.dataSource = new MatTableDataSource(batchTransfers);
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch (property) {
+            /*
+ displayedColumns = ['batchId', 'state', 'settlement.currency', 'settlement.amount', 'settlement.date', 'settlement.creditor',
+    'settlement.debtor', 'rates[0].to', 'rates[0].rate', 'actions'];
+*/
+            case 'settlement.currency': return item.settlement.currency;
+            case 'settlement.amount': return item.settlement.amount;
+            case 'settlement.date': return item.settlement.date;
+            case 'settlement.creditor': return item.settlement.creditor;
+            case 'settlement.debtor': return item.settlement.debtor;
+            case 'rates[0].to': return item.rates[0].to;
+            case 'rates[0].rate': return item.rates[0].rate;
+            default: return item[property];
+          }
+        };
+
         this.batchTransfers = batchTransfers;
 
         this.dataSource.paginator = this.paginator;

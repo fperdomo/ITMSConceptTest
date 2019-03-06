@@ -28,43 +28,43 @@
           </ng-container>
 
           <!-- currency -->
-          <ng-container matColumnDef="currency">
+          <ng-container matColumnDef="settlement.currency">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Currency </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.settlement.currency}} </mat-cell>
           </ng-container>
 
           <!-- amount -->
-          <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="settlement.amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.settlement.amount}} </mat-cell>
           </ng-container>
 
           <!-- date -->
-          <ng-container matColumnDef="date">
+          <ng-container matColumnDef="settlement.date">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{ getDateInFormat(row.settlement.date) }} </mat-cell>
           </ng-container>
 
           <!-- creditor -->
-          <ng-container matColumnDef="creditor">
+          <ng-container matColumnDef="settlement.creditor">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Creditor </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{ companyToStr(row.settlement.creditor) }} </mat-cell>
           </ng-container>
 
           <!-- debtor -->
-          <ng-container matColumnDef="debtor">
+          <ng-container matColumnDef="settlement.debtor">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Debtor </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{ companyToStr(row.settlement.debtor) }} </mat-cell>
           </ng-container>
 
           <!-- to -->
-          <ng-container matColumnDef="to">
+          <ng-container matColumnDef="rates[0].to">
             <mat-header-cell *matHeaderCellDef mat-sort-header> To </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.rates[0].to}} </mat-cell>
           </ng-container>
 
           <!-- rate -->
-          <ng-container matColumnDef="rate">
+          <ng-container matColumnDef="rates[0].rate">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Rate </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.rates[0].rate}} </mat-cell>
           </ng-container>
