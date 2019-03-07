@@ -18,3 +18,18 @@ export interface Rate {
   to: string;
   rate: string;
 }
+
+export interface TransferFunds {
+  $class: string;
+  batchId: string; 
+  transactionId: string; 
+  timestamp: Date;
+}
+
+
+export interface CompleteSettlement {
+  $class: string;
+  batchId: string;
+  transactionId: string;
+  timestamp: Date;
+}

@@ -73,7 +73,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>  Action </mat-header-cell>
             <mat-cell *matCellDef="let row">
               <mat-menu #appMenu="matMenu">
-                <button mat-menu-item (click)="actionUpdateTrx(row)"> Update Transaction </button>
+                <button mat-menu-item (click)="openModalUpdateTrx(row, templateUpdateTrx)"> Update Transaction</button>        
               </mat-menu>
 
               <button mat-icon-button [matMenuTriggerFor]="appMenu">
@@ -91,5 +91,12 @@
       </div>
     </div>
   </div>
+
+  <ng-template #templateUpdateTrx>
+    <div class="modal-body">
+      <app-updateTrxs [requestId]="requestId" [modalRef]="modalRef"></app-updateTrxs>
+    </div>
+  </ng-template>
+
 </div>
 

@@ -21,9 +21,9 @@ export class UpdateTrxsComponent implements OnInit {
   message: string;
   registerForm: FormGroup;
   updateted = false;
-  currency: any = "USD";
-  currencies: any = ["USD", "EUR"];
-  @Input('toCompanyId') toCompanyId: string;
+  state: any = "APPROVED";
+  states: any = ["APPROVED", "REJECTED"];
+  @Input('requestId') requestId: string;
   @Input('modalRef') modalRef: BsModalRef;
  
 
@@ -32,33 +32,19 @@ export class UpdateTrxsComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      requestId: ['', Validators.required],
-      toCompanyId: [this.toCompanyId, Validators.required],
-      currency: ['', Validators.required],
-      amount: ['', Validators.required],
-      description: [''],
+      requestId: [this.requestId, Validators.required],
+      state: ['', Validators.required],
+      reasonsRejected: [''],
 
     });
     
-    this.registerForm.controls['requestId'].setValue(this.makeRequestId());
-
-    this.alerts.setDefaults('timeout', 0);
+     this.alerts.setDefaults('timeout', 0);
   }
-
-  makeRequestId() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < 5; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }
-
+ 
   // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
 
-  onUpdate() {
+  onSubmit() {
     this.updateted = true;
 
     // stop here if form is invalid
@@ -72,7 +58,7 @@ export class UpdateTrxsComponent implements OnInit {
         $class: "com.itms.UpdateTrasferRequest",
         requestId: this.registerForm.controls["requestId"].value,
         state: this.registerForm.controls["state"].value,
-        reasonsRejected: this.registerForm.controls["reasons"].value,
+        reasonsRejected: this.registerForm.controls["reasonsRejected"].value,
         transactionId: "",
         timestamp: new Date()
       } as UpdateTrx;

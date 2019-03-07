@@ -1,8 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertsService } from 'angular-alert-module';
 
-import { BatchTransfer } from './batchTransfer';
+import { BatchTransfer, TransferFunds, CompleteSettlement } from './batchTransfer';
 import { BatchTransfersService } from './batchTransfers.service';
 
 @Component({
@@ -17,11 +19,13 @@ export class BatchTransfersComponent implements OnInit {
   batchTransfers: BatchTransfer[] = [];
   editBatchTransfer: BatchTransfer; // the batchTransfer currently being edited
   dataSource: MatTableDataSource<BatchTransfer>;
+  batchId =  "";
+  modalRef: BsModalRef;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
-  constructor(private batchTransfersService: BatchTransfersService) { }
+  constructor(private batchTransfersService: BatchTransfersService, private modalService: BsModalService, private alerts: AlertsService) { }
 
   ngOnInit() {
     this.getBatchTransfers();
@@ -72,17 +76,7 @@ export class BatchTransfersComponent implements OnInit {
     }
   }
 
-  update() {
-    if (this.editBatchTransfer) {
-      this.batchTransfersService.updateBatchTransfer(this.editBatchTransfer)
-        .subscribe(batchTransfer => {
-          // replace the batchTransfer in the batchTransfers list with update from server
-          const ix = batchTransfer ? this.batchTransfers.findIndex(h => h.batchId === batchTransfer.batchId) : -1;
-          if (ix > -1) { this.batchTransfers[ix] = batchTransfer; }
-        });
-      this.editBatchTransfer = undefined;
-    }
-  }
+  u
 
   actionTransferFunds(batchTransfer: BatchTransfer): void {
     alert(batchTransfer.batchId);
@@ -117,4 +111,65 @@ export class BatchTransfersComponent implements OnInit {
     var hours = d.getHours().toString().length === 1 ? '0' + d.getHours() : d.getHours().toString();
     return year + "/" + monthStr + "/" + dateStr + ' ' + hours + ':' + minutes;
   }
+
+
+  /*------ TransferFunds ---------*/
+
+  openModalTransferFunds(batchTransfer: BatchTransfer, template: TemplateRef<any>) {
+    this.batchId = batchTransfer.batchId;
+    this.modalRef = this.modalService.show(template, { class: 'modal-md' });
+  }
+
+  confirmTransferFunds(): void {
+    const newTransferFunds: TransferFunds =
+      {
+        $class: "com.itms.TransferFunds",
+        batchId: this.batchId,  
+        timestamp: new Date(),
+        transactionId: ""
+      } as TransferFunds;
+
+    this.batchTransfersService.actionTransferFunds(newTransferFunds)
+      .subscribe(submiit => {
+        this.alerts.setMessage('POST TransferFunds Success', 'success');
+        this.modalRef.hide();
+      }
+      );
+  }
+
+  declineTransferFunds(): void {
+    this.modalRef.hide();
+  }
+
+  /*----- Fin TransferFunds --------*/
+
+  /*------ CompleteSettlement ---------*/
+
+  openModalCompleteSettlement(batchTransfer: BatchTransfer, template: TemplateRef<any>) {
+    this.batchId = batchTransfer.batchId;
+    this.modalRef = this.modalService.show(template, { class: 'modal-md' });
+  }
+
+  confirmCompleteSettlement(): void {
+    const newCompleteSettlement: CompleteSettlement =
+      {
+        $class: "com.itms.CompleteSettlement",
+        batchId: this.batchId,
+        timestamp: new Date(),
+        transactionId: ""
+      } as CompleteSettlement;
+
+    this.batchTransfersService.actionCompleteSettlement(newCompleteSettlement)
+      .subscribe(submiit => {
+        this.alerts.setMessage('POST CompleteSettlement Success', 'success');
+        this.modalRef.hide();
+      }
+      );
+  }
+
+  declineCompleteSettlement(): void {
+    this.modalRef.hide();
+  }
+
+  /*----- Fin CompleteSettlement --------*/
 }

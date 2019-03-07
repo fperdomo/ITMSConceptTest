@@ -6,7 +6,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { BatchTransfer } from './batchTransfer';
+import { BatchTransfer, TransferFunds, CompleteSettlement } from './batchTransfer';
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 const httpOptions = {
@@ -19,6 +19,8 @@ const httpOptions = {
 @Injectable()
 export class BatchTransfersService {
   batchTransfersUrl = 'http://104.196.27.3:3000/api/BatchTransferRequest';  // URL to web api
+  transferFundsUrl = 'http://104.196.27.3:3000/api/TransferFunds';
+  completeSettlementUrl = 'http://104.196.27.3:3000/api/CompleteSettlement';
   private handleError: HandleError;
 
   constructor(
@@ -50,33 +52,20 @@ export class BatchTransfersService {
       );
   }
 
-  //////// Save methods //////////
-
-  /** POST: add a new batchTransfer to the database */
-  addBatchTransfer (batchTransfer: BatchTransfer): Observable<BatchTransfer> {
-    return this.http.post<BatchTransfer>(this.batchTransfersUrl, batchTransfer, httpOptions)
+  /** POST: PrepareSettlement  */
+  actionTransferFunds(transferFunds: TransferFunds): Observable<TransferFunds> {
+    return this.http.post<TransferFunds>(this.transferFundsUrl, transferFunds, httpOptions)
       .pipe(
-        catchError(this.handleError('addBatchTransfer', batchTransfer))
+      catchError(this.handleError('actionTransferFunds', transferFunds))
       );
   }
 
-  /** DELETE: delete the batchTransfer from the server */
-  deleteBatchTransfer (id: number): Observable<{}> {
-    const url = `${this.batchTransfersUrl}/${id}`; // DELETE api/batchTransfers/42
-    return this.http.delete(url, httpOptions)
-      .pipe(
-        catchError(this.handleError('deleteBatchTransfer'))
-      );
-  }
 
-  /** PUT: update the batchTransfer on the server. Returns the updated batchTransfer upon success. */
-  updateBatchTransfer (batchTransfer: BatchTransfer): Observable<BatchTransfer> {
-    httpOptions.headers =
-      httpOptions.headers.set('Authorization', 'my-new-auth-token');
-
-    return this.http.put<BatchTransfer>(this.batchTransfersUrl, batchTransfer, httpOptions)
+  /** POST: PrepareSettlement  */
+  actionCompleteSettlement(completeSettlement: CompleteSettlement): Observable<CompleteSettlement> {
+    return this.http.post<CompleteSettlement>(this.completeSettlementUrl, completeSettlement, httpOptions)
       .pipe(
-        catchError(this.handleError('updateBatchTransfer', batchTransfer))
+      catchError(this.handleError('actionCompleteSettlement', completeSettlement))
       );
   }
 }

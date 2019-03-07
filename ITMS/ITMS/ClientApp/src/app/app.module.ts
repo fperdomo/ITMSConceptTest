@@ -21,6 +21,7 @@ import { CompaniesComponent } from './companies/companies.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { BatchTransfersComponent } from './batchTransfer/batchTransfers.component';
 import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
+import { UpdateTrxsComponent } from './updateTrx/updateTrxs.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
     CompaniesComponent,
     TransactionsComponent,
     BatchTransfersComponent,
-    SubmitTrxsComponent
+    SubmitTrxsComponent,
+    UpdateTrxsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
