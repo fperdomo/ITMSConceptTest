@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
-import { Transaction } from './transaction';
+import { Transaction, TransactionDetail } from './transaction';
 import { TransactionsService } from './transactions.service';
 
 @Component({
@@ -13,16 +14,18 @@ import { TransactionsService } from './transactions.service';
 })
 export class TransactionsComponent implements OnInit {
   displayedColumns = ['requestId', 'fromCompany', 'toCompany', 'state',
-    'currency', 'amount', 'date', 'description', 'actions'];
+    'details.currency', 'details.amount', 'details.date', 'details.description', 'details.reasonsRejected', 'actions'];
   transactions: Transaction[] = [];
   editTransaction: Transaction; // the transaction currently being edited
   dataSource: MatTableDataSource<Transaction>;
+  requestId = "";
+  modalRef: BsModalRef;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private transactionsService: TransactionsService) { }
+  constructor(private transactionsService: TransactionsService, private modalService: BsModalService) { }
 
   ngOnInit() {
     this.getTransactions();
@@ -40,17 +43,23 @@ export class TransactionsComponent implements OnInit {
       .subscribe(transactions => {
 
         this.dataSource = new MatTableDataSource(transactions);
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch (property) {
+            case 'details.currency': return item.details.currency;
+            case 'details.amount': return item.details.amount;
+            case 'details.date': return item.details.date;
+            case 'details.description': return item.details.description;
+            case 'details.reasonsRejected': return item.details.reasonsRejected;
+            default: return item[property];
+          }
+        };
         this.transactions = transactions;
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       });
   }
-
-
-  edit(transaction) {
-    this.editTransaction = transaction;
-  }
+  
 
   search(searchTerm: string) {
     this.editTransaction = undefined;
@@ -59,15 +68,16 @@ export class TransactionsComponent implements OnInit {
         .subscribe(transactions => this.transactions = transactions);
     }
   }
+  
 
-  actionUpdateTrx(transaction: Transaction): void {
-    alert(transaction.requestId);
+  openModalUpdateTrx(transaction: Transaction, template: TemplateRef<any>) {
+    this.requestId = transaction.requestId.toString();
+    this.modalRef = this.modalService.show(template, { class: 'modal-md' });
   }
 
   companyToStr(companyName : string) {
     return companyName.split("#")[1];
   }
-
 
   getDateInFormat(stringDate: string) {
     var d = new Date(stringDate);

@@ -6,7 +6,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { Company } from './company';
+import { Company, PrepareSettlement } from './company';
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 const httpOptions = {
@@ -19,6 +19,7 @@ const httpOptions = {
 @Injectable()
 export class CompaniesService {
   companiesUrl = 'http://104.196.27.3:3000/api/Company';  // URL to web api
+  prepareSettUrl = 'http://104.196.27.3:3000/api/PrepareSettlement';
   private handleError: HandleError;
 
   constructor(
@@ -50,33 +51,11 @@ export class CompaniesService {
       );
   }
 
-  //////// Save methods //////////
-
-  /** POST: add a new company to the database */
-  addCompany (company: Company): Observable<Company> {
-    return this.http.post<Company>(this.companiesUrl, company, httpOptions)
+  /** POST: PrepareSettlement  */
+  actionPrepareSettlement(prepareSettlement: PrepareSettlement): Observable<PrepareSettlement> {
+    return this.http.post<PrepareSettlement>(this.prepareSettUrl, prepareSettlement, httpOptions)
       .pipe(
-        catchError(this.handleError('addCompany', company))
-      );
-  }
-
-  /** DELETE: delete the company from the server */
-  deleteCompany (id: number): Observable<{}> {
-    const url = `${this.companiesUrl}/${id}`; // DELETE api/companies/42
-    return this.http.delete(url, httpOptions)
-      .pipe(
-        catchError(this.handleError('deleteCompany'))
-      );
-  }
-
-  /** PUT: update the company on the server. Returns the updated company upon success. */
-  updateCompany (company: Company): Observable<Company> {
-    httpOptions.headers =
-      httpOptions.headers.set('Authorization', 'my-new-auth-token');
-
-    return this.http.put<Company>(this.companiesUrl, company, httpOptions)
-      .pipe(
-        catchError(this.handleError('updateCompany', company))
+      catchError(this.handleError('actionPrepareSettlement', prepareSettlement))
       );
   }
 }

@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AlertsModule } from 'angular-alert-module';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -19,6 +21,7 @@ import { CompaniesComponent } from './companies/companies.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { BatchTransfersComponent } from './batchTransfer/batchTransfers.component';
 import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
+import { UpdateTrxsComponent } from './updateTrx/updateTrxs.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,8 @@ import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
     CompaniesComponent,
     TransactionsComponent,
     BatchTransfersComponent,
-    SubmitTrxsComponent
+    SubmitTrxsComponent,
+    UpdateTrxsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -48,11 +52,14 @@ import { SubmitTrxsComponent } from './submitTrx/submitTrxs.component';
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalModule.forRoot(),
+    AlertsModule.forRoot()
   ],
   providers: [
     HttpErrorHandler,
-    MessageService
+    MessageService,
+    BsModalRef
   ],
   bootstrap: [AppComponent]
 })
