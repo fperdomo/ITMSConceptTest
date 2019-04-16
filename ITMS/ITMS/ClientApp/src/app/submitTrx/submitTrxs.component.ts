@@ -22,16 +22,11 @@ export class SubmitTrxsComponent implements OnInit {
   message: string;
   registerForm: FormGroup;
   submitted = false;
-<<<<<<< HEAD
-  currencies: ['USD', 'EUR'];
-  @Input() toCompanyId: string;
-=======
+
   currency: any = "USD";
   currencies: any = ["USD", "EUR"];
   @Input('toCompanyId') toCompanyId: string;
   @Input('modalRef') modalRef: BsModalRef;
- 
->>>>>>> 70de34d6be6936c62c17e8d7c683fe24e552aadc
 
   constructor(private submitTrxsService: SubmitTrxsService, private formBuilder: FormBuilder,
     private modalService: BsModalService, private alerts: AlertsService) { }

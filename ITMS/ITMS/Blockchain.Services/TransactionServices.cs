@@ -12,9 +12,10 @@ namespace ITMS.Blockchain.Services
 {
     public class TransactionServices : ITransactionServices
     {
-        private readonly HttpClient _client = new HttpClient();
+        private static readonly HttpClient _client = new HttpClient();
         private string _pathBase = "http://104.196.27.3:3000/api";
         private string _token = "KNvSh8y8Z0VSR8QVb2WRDUEr4Ix923HyKaVs4yVkHCEh0iAmWn9uFDgY6VzuS5Ed";
+        private string _tmp = "Ret";
 
         public ResultDTO CompleteSettlement(CompleteSettlementDTO completeSettlement)
         {
@@ -131,6 +132,11 @@ namespace ITMS.Blockchain.Services
                 var content = new StringContent(dataJson, Encoding.UTF8, "application/json");   
                 var response = _client.PostAsync(path, content).Result;
                 var responseString = response.Content.ReadAsStringAsync();
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    result.ResultOK = false;
+                    //[fperdomo] : Tracear a LOG el error
+                }
             }
             catch (Exception ex)
             {
@@ -154,6 +160,11 @@ namespace ITMS.Blockchain.Services
                 var response = _client.GetAsync(path).Result;
                 var responseString = response.Content.ReadAsStringAsync();
                 result.Data = responseString.Result;
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    result.ResultOK = false;
+                    //[fperdomo] : Tracear a LOG el error
+                }                
                 return result;
             }
             catch (Exception ex)

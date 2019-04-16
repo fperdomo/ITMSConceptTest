@@ -21,14 +21,11 @@ export class CompaniesComponent implements OnInit {
   dataSource: MatTableDataSource<Company>;
   showSubmitTrxs= false;
   @ViewChild(SubmitTrxsComponent) submitTrx;
-<<<<<<< HEAD
-  toCompanyId: "";
-=======
   toCompanyId = "";
   modalRef: BsModalRef;
   message: string;
   rateArray: Rate[] = [];
->>>>>>> 70de34d6be6936c62c17e8d7c683fe24e552aadc
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -117,15 +114,14 @@ export class CompaniesComponent implements OnInit {
     return text;
   }
 
-<<<<<<< HEAD
-  toggleSubmitTrx(company: Company) {
-    this.toCompanyId = company.companyId;
-     this.showSubmitTrxs = true;
-=======
 
+  toggleSubmitTrx(company: Company) {
+     this.toCompanyId = company.companyId.toString();
+     this.showSubmitTrxs = true;
+  }
+  
   declinePrepareSettlement(): void {
     this.modalRef.hide();
->>>>>>> 70de34d6be6936c62c17e8d7c683fe24e552aadc
   }
 
   
