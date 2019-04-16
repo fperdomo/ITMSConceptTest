@@ -15,8 +15,7 @@ namespace ITMS.Blockchain.Services
         private static readonly HttpClient _client = new HttpClient();
         private string _pathBase = "http://104.196.27.3:3000/api";
         private string _token = "KNvSh8y8Z0VSR8QVb2WRDUEr4Ix923HyKaVs4yVkHCEh0iAmWn9uFDgY6VzuS5Ed";
-        private string _tmp = "Ret";
-
+        
         public ResultDTO CompleteSettlement(CompleteSettlementDTO completeSettlement)
         {
             var result = new ResultDTO();
